@@ -14,6 +14,7 @@ server.use(cors());
 
 console.log("Register")
 console.log("Pagination")
+console.log("Registered")
 
 // const { productRoutes, userRoutes } = require("./routers");
 // server.use("/product", productRoutes);
