@@ -9,12 +9,12 @@ require("dotenv").config()
 
 server.use(express.json());
 server.use(cors());
-server.use(express.static("./Public"));
-server.use(bearerToken());
+// server.use(express.static("./Public"));
+// server.use(bearerToken());
 
-const { bookRoutes, userRoutes } = require("./routers");
-server.use("/book", bookRoutes);
-server.use("/user", userRoutes);
+// const { productRoutes, userRoutes } = require("./routers");
+// server.use("/product", productRoutes);
+// server.use("/user", userRoutes);
 
 server.listen(PORT, () => {
     // db.sequelize.sync({ alter: true });
