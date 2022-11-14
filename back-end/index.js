@@ -13,6 +13,7 @@ server.use(cors());
 // server.use(bearerToken());
 
 console.log("Register")
+console.log("Pagination")
 
 // const { productRoutes, userRoutes } = require("./routers");
 // server.use("/product", productRoutes);
