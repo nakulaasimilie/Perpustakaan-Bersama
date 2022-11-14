@@ -12,10 +12,6 @@ server.use(cors());
 // server.use(express.static("./Public"));
 // server.use(bearerToken());
 
-console.log("Register")
-console.log("Pagination")
-console.log("Registered")
-
 // const { productRoutes, userRoutes } = require("./routers");
 // server.use("/product", productRoutes);
 // server.use("/user", userRoutes);
