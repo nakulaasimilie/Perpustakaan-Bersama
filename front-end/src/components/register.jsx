@@ -5,43 +5,28 @@ import { Input, Button, FormLabel, VStack, FormControl, useDisclosure,
 import Axios from "axios";
 import * as Yup from "yup";
 import { Field, ErrorMessage, Formik, Form } from "formik";
-import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
+import { login } from "../redux/userSlice";
+import { useDispatch } from "react-redux";
 
 const url = "http://localhost:2000/user/register"
 
 
 export const Register = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const navigate = useNavigate();
-
+    const dispatch = useDispatch();
 
     const registerSchema = Yup.object().shape({
+        NIM: Yup.string().required(),
         password: Yup.string().required().min(8, "Password min 8 Character"),
         username: Yup.string().required().min(5, "Username  min 5 Character"),
         email: Yup.string().email().required(),
-        password_confirmation: Yup.string().oneOf([Yup.ref('password'), null], "password tak sama")
+        confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], "password tak sama")
     });
-
-    const setNIM = async () => {
-        try {
-            const length = await Axios.get("http://localhost:2000/user/allUser")
-            let date = new Date()
-            let tanggal = date.getDate()
-            let bulan = date.getMonth()
-            let tahun = date.getFullYear()
-
-            const NIM = tanggal + "" + bulan + "" +tahun + ""+length.data.length
-            console.log(length)
-            console.log(NIM)
-        } catch (err) {
-            console.log(err)
-        }
-    }
 
     const onRegister = async (data) => {
         try {
-            if (data.password !== data.password_confirmation) {
+            if (data.password !== data.confirmPassword) {
                 return Swal.fire({
                 icon: 'error',
                 title: 'Oooops ...',
@@ -55,6 +40,14 @@ export const Register = () => {
 
             const result = await Axios.post(url, data);
 
+            dispatch(login({
+                NIM: result.data.id,
+                username: result.data.username,
+                email: result.data.email,
+            }));
+
+            localStorage.setItem("token", result.data.token);
+
             Swal.fire({
                 icon: 'success',
                 title: 'Good Job',
@@ -64,7 +57,6 @@ export const Register = () => {
                     container: 'my-swal'
                 }
             })
-            setTimeout(() => navigate(`/verification/${result.data.token}`), 2000);
 
         } catch (err) {
             Swal.fire({
@@ -79,21 +71,18 @@ export const Register = () => {
         }
     };
 
-    useEffect(() => {
-        setNIM()
-    }, [])
 
     return (
     <>
         <HStack bg="white">
-        <Button onClick={onOpen} display={{ base: "none", md: "inline-flex" }}
+        <Button onClick={onOpen}
             fontSize={"sm"}
             fontWeight={600}
             color={"white"}
             bg={"pink.400"}
-          >
+        >
             Sign Up
-          </Button>
+        </Button>
         <Modal
         isOpen={isOpen}
         onClose={onClose}
@@ -111,6 +100,7 @@ export const Register = () => {
                                 username: "",
                                 email: "",
                                 confirmPassword: "",
+                                NIM: "",
                             }}
                             validationSchema={registerSchema}
                             onSubmit={(values, action) => {
@@ -119,6 +109,7 @@ export const Register = () => {
                                 action.setFieldValue("password", "");
                                 action.setFieldValue("email", "");
                                 action.setFieldValue("confirmPassword", "");
+                                action.setFieldValue("NIM", "");
                             }}
                             >
                             {(props) => {
@@ -127,6 +118,15 @@ export const Register = () => {
                             
                                 <Form>
                                 <VStack spacing={4} align="flex-start">
+                                    <FormControl>
+                                        <FormLabel htmlFor="NIM" >NIM</FormLabel >
+                                        <Field as={Input} type="text" name="NIM" variant="filled" />
+                                        <ErrorMessage
+                                            style={{ color: "red" }}
+                                            component="div"
+                                            name="NIM"
+                                            />
+                                    </FormControl>
                                     <FormControl>
                                         <FormLabel htmlFor="username" >Username</FormLabel >
                                         <Field as={Input} type="text" name="username" variant="filled" />
