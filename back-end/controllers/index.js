@@ -1,5 +1,7 @@
-const user = require("./user")
+const book = require("./bookControllers");
+const user = require("./user");
 
-module.exports = { 
+module.exports = {
   user,
-}
+  book,
+};
