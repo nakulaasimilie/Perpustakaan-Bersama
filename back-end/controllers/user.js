@@ -33,32 +33,42 @@ module.exports = {
         const { NIM, password } = req.body;
 
         
-        const isUserExist = await db.User.findOne({
+        const isUserExist = await user.findOne({
           where: {
               NIM: NIM ? NIM : "",
           },
           // raw: true,
         });
-        if(!isUserExist) throw "Data dosen't match"
+        if(!isUserExist) throw "User not found"
+
         const isValid = await bcrypt.compare(password, isUserExist.password)
         
         if(!isValid) throw `Wrong password`
 
-        // const token = jwt.sign({
-        //   username: isUserExist.username,
-        //   id: isUserExist.id,
-        // },
-        // )
+        const payload = {id:isUserExist.id, isAdmin: isUserExist.isAdmin}
+        const token = jwt.sign(payload,"Perpustakaan Bersama", {expiresIn: '1h'})
+        // console.log(token)
+
           res.status(200).send({
             user: {
               username: isUserExist.username,
               id: isUserExist.id,
             },
-            // token,
+            token,
+            message: "Login Succses"
           })
       } catch(err) {
         console.log(err)
         res.status(400).send(err)
       }
+  },
+  findAllUser: async (req, res) => {
+    try {
+      const users = await user.findAll({ raw: true })
+      return res.status(200).send(users)
+    } catch (err) {
+      console.log(err)
+      res.status(400).send(err)
+    }
   }
 }
