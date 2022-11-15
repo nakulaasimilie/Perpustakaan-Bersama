@@ -1,3 +1,4 @@
+import { Register } from "./register";
 import {
   Box,
   Flex,
@@ -76,16 +77,7 @@ export default function NavbarComp() {
           >
             Sign In
           </Button>
-          <Button
-            w="40"
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"pink.400"}
-          >
-            Sign Up
-          </Button>
+          <Register/>
         </Stack>
 
         <Flex
@@ -228,15 +220,7 @@ const MobileNav = () => {
           >
             Sign In
           </Button>
-          <Button
-            w="40"
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"pink.400"}
-          >
-            Sign Up
-          </Button>
+          <Register/>
           </Stack>
         </Stack>
     </Stack>
