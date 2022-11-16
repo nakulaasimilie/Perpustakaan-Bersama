@@ -4,6 +4,7 @@ const profile = db.Profile
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { Op } = require("sequelize")
+const transporter = require("../helpers/transporter")
 
 module.exports = {
   register: async (req, res) => {
@@ -63,7 +64,6 @@ module.exports = {
         
         if(!isValid) throw `Wrong password`
 
-
           res.status(200).send({
               message: "Login Succes",
               isUserExist,
@@ -106,6 +106,26 @@ module.exports = {
     try {
       const users = await user.findAll({ raw: true })
       return res.status(200).send(users)
+    } catch (err) {
+      console.log(err)
+      res.status(400).send(err)
+    }
+  }, 
+  verification: async (req, res) => {
+    try {
+      const { email } = req.body
+     
+       await transporter.sendMail({
+        from: "Admin",
+        to: email,
+        subject: "Verification User",
+        html: "<h1>Email Verification</h1>"
+      })
+
+      res.status(200).send({
+        massage: "Email verified",
+      });
+
     } catch (err) {
       console.log(err)
       res.status(400).send(err)
