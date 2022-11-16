@@ -81,7 +81,6 @@ module.exports = {
   searchBy: async (req, res) => {
     try {
       const { Title, Author } = req.query;
-      
       const users = await book.findAll({
         where: {
           [Op.or]: {
@@ -141,14 +140,37 @@ module.exports = {
           Images: req.body.Images,
         },
         {
-          where: { id: req.params.id },
+          where: { id: req.body.id },
         }
       );
-      const users = await book.findAll({ where: { id: req.params.id } });
+      const users = await book.findAll({ where: { id: req.body.id } });
       res.status(200).send(users);
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   },
+
+  sortBy: async (req, res) => {
+    try {
+      const { data, order } = req.query;
+      const users = await book.findAll({
+        order: [[data, order]],
+      });
+      res.status(200).send(users);
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
+  uploadFile: async (req, res) => {
+    try {
+      
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
 };
