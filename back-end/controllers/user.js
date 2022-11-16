@@ -1,5 +1,6 @@
 const db = require("../models")
 const user = db.User
+const profile = db.Profile
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { Op } = require("sequelize")
@@ -8,6 +9,7 @@ module.exports = {
   register: async (req, res) => {
     try {
       const { NIM, username, email, password, confirmPassword } = req.body;
+
       if (password != confirmPassword) throw "Wrong Password";
 
       if (password.length < 8) throw "Minimum 8 characters";
@@ -22,11 +24,21 @@ module.exports = {
         email,
         password: hashPass,
       })
-      res.status(200).send(data)
-    } catch(err) {
-      res.status(400).send(err)
-      // console.log(err)
-    }
+      await profile.create({
+        UserNIM: NIM
+      })
+
+      const token = jwt.sign({ NIM: NIM }, "jcwd2204");
+
+      res.status(200).send({
+        massage: "Register Succes",
+        data,
+        token
+      });
+
+      } catch(err) {
+        res.status(400).send(err)
+      }
   },
   login: async (req,res) => {
       try {
@@ -37,30 +49,58 @@ module.exports = {
           where: {
               NIM: NIM ? NIM : "",
           },
-          // raw: true,
+          raw: true,
         });
+        // console.log(isUserExist)
+        
         if(!isUserExist) throw "User not found"
+        
+        const payload = {NIM:isUserExist.NIM}
+        const token = jwt.sign(payload,"jcwd2204" )
+        // console.log(token)
 
         const isValid = await bcrypt.compare(password, isUserExist.password)
         
         if(!isValid) throw `Wrong password`
 
-        const payload = {id:isUserExist.id, isAdmin: isUserExist.isAdmin}
-        const token = jwt.sign(payload,"Perpustakaan Bersama", {expiresIn: '1h'})
-        // console.log(token)
 
           res.status(200).send({
-            user: {
-              username: isUserExist.username,
-              id: isUserExist.id,
-            },
-            token,
-            message: "Login Succses"
-          })
+              message: "Login Succes",
+              isUserExist,
+              token
+          });
+
       } catch(err) {
         console.log(err)
         res.status(400).send(err)
       }
+  },
+  keepLogin: async (req, res) => {
+    try {
+        
+        const verify = jwt.verify(req.token, "jcwd2204");
+        // console.log(verify);
+        const result = await user.findOne({
+            where: {
+                NIM: verify.NIM,
+            },
+            raw: true,
+        });
+        
+        const isProflieExist = await db.Profile.findOne({
+            where: {
+                UserNIM: result.NIM
+            },
+            raw: true,
+        });
+
+        result.profilePic = isProflieExist.profilePic
+        // console.log(result)
+        
+        res.status(200).send(result);
+        } catch (err) {
+        res.status(400).send(err);
+    }
   },
   findAllUser: async (req, res) => {
     try {

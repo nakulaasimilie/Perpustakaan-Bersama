@@ -18,6 +18,11 @@ import {
   Image,
   FormControl,
   Input,
+  Menu,
+  MenuButton,
+  Avatar,
+  MenuList,
+  MenuItem,
 
 } from "@chakra-ui/react";
 import {
@@ -28,10 +33,58 @@ import {
   MoonIcon, SunIcon
 
 } from "@chakra-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, login } from "../redux/userSlice";
+import { useRef } from "react";
+import Swal from 'sweetalert2'
+import Axios from "axios";
+
+const url = "http://localhost:2000/user/login"
 
 export default function NavbarComp() {
+  const { NIM, username } = useSelector((state) => state.userSlice.value)
   const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
+  const tokenlocalstorage = localStorage.getItem("token");
+  const dispatch = useDispatch();
+  const inputNIM = useRef("");
+  const inputPASS = useRef("");
+
+  const onLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("token");
+  };
+
+  const onLogin = async () => {
+    try {
+        const user = {
+            password: inputPASS.current.value,
+            NIM: inputNIM.current.value,
+        };
+
+        console.log(user)
+
+        const result = await Axios.post(url, user);
+    
+        dispatch(login({
+            NIM: result.data.isUserExist.NIM,
+            username: result.data.isUserExist.username,
+            email: result.data.isUserExist.email,
+        }));
+
+        localStorage.setItem("token", result.data.token);
+    
+    } catch (err) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `${err.response.data}`,
+            timer: 1000,
+            customClass: {
+                container: 'my-swal'
+            }
+        })
+    }}
 
   return (
     <Box>
@@ -57,29 +110,59 @@ export default function NavbarComp() {
             {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
           </Button>
 
+        {tokenlocalstorage ? 
+
+        <Menu>
+        <MenuButton
+          display={{ base: "none", md: "inline-flex" }}
+          as={Button}
+          rounded={"full"}
+          cursor={"pointer"}
+          minW={0}
+          p="6"
+        >
+          <Flex>
+            <Avatar size='sm' src="https://avatars.dicebear.com/api/male/username.svg" />
+            <Box ml='3'>
+                <Text fontWeight='bold'>
+                    {username}
+                </Text>
+                <Text fontWeight='bold'>
+                    {NIM}
+                </Text>
+            </Box>
+          </Flex>
+        </MenuButton>
+        <MenuList alignItems={"center"}>
+          <MenuItem >Profile</MenuItem>
+          <MenuItem onClick={onLogout} >Log Out</MenuItem>
+        </MenuList>
+      </Menu>
+        : 
         <Stack
+          display={{ base: "none", md: "inline-flex" }}
           justify={"flex-end"}
           direction={"row"}
         >
-          <FormControl id="NIM" display={{ base: "none", md: "inline-flex" }}>
-            <Input type="text" placeholder="NIM" />
+          <FormControl id="NIM" >
+            <Input type="text" placeholder="NIM" ref={inputNIM} />
           </FormControl>
-          <FormControl id="Password" display={{ base: "none", md: "inline-flex" }}>
-            <Input type="text" placeholder="Password"/>
+          <FormControl id="Password" >
+            <Input type="text" placeholder="Password" ref={inputPASS}/>
           </FormControl>
 
           <Button
             w="40"
-            display={{ base: "none", md: "inline-flex" }}
             fontSize={"sm"}
             fontWeight={600}
             m="3"
+            onClick={onLogin}
           >
             Sign In
           </Button>
           <Register/>
         </Stack>
-
+        }
         <Flex
           display={{ base: "flex", md: "none" }}
         >
@@ -105,6 +188,7 @@ const DesktopNav = () => {
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
   const popoverContentBgColor = useColorModeValue("white", "gray.800");
+  
 
   return (
     <>
@@ -190,6 +274,48 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
 };
 
 const MobileNav = () => {
+  const tokenlocalstorage = localStorage.getItem("token");
+  const { NIM, username } = useSelector((state) => state.userSlice.value)
+  const dispatch = useDispatch();
+  const inputNIM = useRef("");
+  const inputPASS = useRef("");
+
+  const onLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("token");
+  };
+
+  const onLogin = async () => {
+    try {
+        const user = {
+            password: inputPASS.current.value,
+            NIM: inputNIM.current.value,
+        };
+
+        console.log(user)
+
+        const result = await Axios.post(url, user);
+    
+        dispatch(login({
+            NIM: result.data.isUserExist.NIM,
+            username: result.data.isUserExist.username,
+            email: result.data.isUserExist.email,
+        }));
+
+        localStorage.setItem("token", result.data.token);
+    
+    } catch (err) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `${err.response.data}`,
+            timer: 1000,
+            customClass: {
+                container: 'my-swal'
+            }
+        })
+    }}
+
   return (
     <>
     <Stack
@@ -202,27 +328,52 @@ const MobileNav = () => {
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
 
+      {tokenlocalstorage ? 
+      
+      <Menu>
+        <MenuButton
+
+        >
+          <Flex>
+            <Avatar size='sm' src="https://avatars.dicebear.com/api/male/username.svg" />
+            <Box ml='3'>
+                <Text fontWeight='bold'>
+                    {username}  {NIM}
+                </Text>
+            </Box>
+          </Flex>
+        </MenuButton>
+        <MenuList alignItems={"center"}>
+          <MenuItem >Profile</MenuItem>
+          <MenuItem onClick={onLogout} >Log Out</MenuItem>
+        </MenuList>
+      </Menu>
+      
+      :
+    
         <Stack
           justify={"flex-end"}
         >
           <FormControl id="NIM" >
-            <Input type="text" placeholder="NIM"/>
+            <Input type="text" placeholder="NIM" ref={inputNIM}/>
           </FormControl>
           <FormControl id="Password" >
-            <Input type="text" placeholder="Password"/>
+            <Input type="text" placeholder="Password" ref={inputPASS}/>
           </FormControl>
 
         <Stack direction="row">
           <Button
-            w="40"
             fontSize={"sm"}
             fontWeight={600}
+            onClick={onLogin}
           >
             Sign In
           </Button>
           <Register/>
           </Stack>
         </Stack>
+        }
+
     </Stack>
   </>
   );

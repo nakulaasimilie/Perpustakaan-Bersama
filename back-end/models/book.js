@@ -29,13 +29,13 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            Sinopsis: {
+            Abstract: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
             Images: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true,
             },
         },
         {
