@@ -62,12 +62,33 @@ module.exports = {
       const { Title, Genre, Publisher, Author } = req.query;
       const users = await book.findAll({
         where: {
-          [Op.like]: {
-            [Op.or]: {
-              Title: Title ? Title : "",
-              Author: Author ? Author : "",
-              Genre: Genre ? Genre : "",
-              Publisher: Publisher ? Publisher : "",
+          [Op.or]: {
+            Title: Title ? Title : "",
+            Author: Author ? Author : "",
+            Genre: Genre ? Genre : "",
+            Publisher: Publisher ? Publisher : "",
+          },
+        },
+        raw: true,
+      });
+      res.status(200).send(users);
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
+  searchBy: async (req, res) => {
+    try {
+      const { Title, Author } = req.query;
+      const users = await book.findAll({
+        where: {
+          [Op.or]: {
+            Title: {
+              [Op.like]: `%${Title}%`,
+            },
+            Author: {
+              [Op.like]: `%${Author}%`,
             },
           },
         },
@@ -79,62 +100,6 @@ module.exports = {
       res.status(400).send(err);
     }
   },
-  //   getByTitle: async (req, res) => {
-  //     try {
-  //       const users = await book.findAll({
-  //         include: book,
-  //         where: {
-  //           Title: Title,
-  //         },
-  //       });
-  //       res.status(200).send(users);
-  //     } catch (err) {
-  //       console.log(err);
-  //       res.status(400).send(err);
-  //     }
-  //   },
-  //   getByAuthor: async (req, res) => {
-  //     try {
-  //       const users = await book.findAll({
-  //         include: book,
-  //         where: {
-  //           Author: req.query.Author,
-  //         },
-  //       });
-  //       res.status(200).send(users);
-  //     } catch (err) {
-  //       console.log(err);
-  //       res.status(400).send(err);
-  //     }
-  //   },
-  //   getByGenre: async (req, res) => {
-  //     try {
-  //       const users = await book.findAll({
-  //         include: book,
-  //         where: {
-  //           Genre: req.query.Genre,
-  //         },
-  //       });
-  //       res.status(200).send(users);
-  //     } catch (err) {
-  //       console.log(err);
-  //       res.status(400).send(err);
-  //     }
-  //   },
-  //   getByPublisher: async (req, res) => {
-  //     try {
-  //       const users = await book.findAll({
-  //         include: book,
-  //         where: {
-  //           Publisher: req.query.Publisher,
-  //         },
-  //       });
-  //       res.status(200).send(users);
-  //     } catch (err) {
-  //       console.log(err);
-  //       res.status(400).send(err);
-  //     }
-  //   },
 
   totalBooks: async (req, res) => {
     try {
@@ -175,14 +140,72 @@ module.exports = {
           Images: req.body.Images,
         },
         {
-          where: { id: req.params.id },
+          where: { id: req.body.id },
         }
       );
-      const users = await book.findAll({ where: { id: req.params.id } });
+      const users = await book.findAll({ where: { id: req.body.id } });
       res.status(200).send(users);
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   },
-};
+
+  sortBy: async (req, res) => {
+    try {
+      const { data, order } = req.query;
+      const users = await book.findAll({
+        order: [[data, order]],
+      });
+      res.status(200).send(users);
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
+
+  sortBy: async (req, res) => {
+    try {
+      const { data, order } = req.query;
+      const users = await book.findAll({
+        order: [[data, order]],
+      });
+      res.status(200).send(users);
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
+  uploadFile: async (req, res) => {
+    try {
+      let fileUploaded = req.file;
+      console.log("controller", fileUploaded);
+      await book.update(
+        {
+          Images: fileUploaded.filename,
+        },
+        {
+          where: {
+            id: req.body.id,
+          },
+        }
+      );
+      const getBook = await book.findOne({
+        where: {
+          id: req.body.id,
+        },
+        raw: true,
+      });
+      res.status(200).send({
+        id: getBook.id,
+        Title: getBook.Title,
+        Images: getBook.Images,
+      });
+    } catch (err) {
+      console.log(err)
+      res.status(400).send(err);
+    }
+  }
+}

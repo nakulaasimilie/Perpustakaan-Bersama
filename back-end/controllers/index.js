@@ -1,4 +1,6 @@
-const book = require("./bookControllers");
+
+const book = require("./book");
+
 const user = require("./user");
 
 module.exports = {
