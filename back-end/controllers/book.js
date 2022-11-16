@@ -150,62 +150,72 @@ module.exports = {
       res.status(400).send(err);
     }
   },
-
-  sortBy: async (req, res) => {
+  view2: async (req, res) => {
     try {
-      const { data, order } = req.query;
-      const users = await book.findAll({
-        order: [[data, order]],
-      });
-      res.status(200).send(users);
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
-    }
-  },
-
-
-  sortBy: async (req, res) => {
-    try {
-      const { data, order } = req.query;
-      const users = await book.findAll({
-        order: [[data, order]],
-      });
-      res.status(200).send(users);
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
-    }
-  },
-
-  uploadFile: async (req, res) => {
-    try {
-      let fileUploaded = req.file;
-      console.log("controller", fileUploaded);
-      await book.update(
-        {
-          Images: fileUploaded.filename,
-        },
-        {
-          where: {
-            id: req.body.id,
-          },
-        }
-      );
-      const getBook = await book.findOne({
+      const { page, limit, search_query, order, order_direction } = req.query;
+      const booklist_page = parseInt(page) || 0;
+      const list_limit = parseInt(limit) || 10;
+      const search = search_query || '';
+      const offset = list_limit * booklist_page;
+      const orderby = order || 'Title';
+      const direction = order_direction || 'ASC';
+      const totalRows = await book.count({
         where: {
-          id: req.body.id,
+          [Op.or]: [
+            {
+              Title: {
+                [Op.like]: '%' + search + '%',
+              },
+            },
+            {
+              Author: {
+                [Op.like]: '%' + search + '%',
+              },
+            },
+            {
+              Publisher: {
+                [Op.like]: '%' + search + '%',
+              },
+            },
+          ],
         },
-        raw: true,
       });
-      res.status(200).send({
-        id: getBook.id,
-        Title: getBook.Title,
-        Images: getBook.Images,
+      const totalPage = Math.ceil(totalRows / limit);
+      const result = await book.findAll({
+        where: {
+          [Op.or]: [
+            {
+              Title: {
+                [Op.like]: '%' + search + '%',
+              },
+            },
+            {
+              Author: {
+                [Op.like]: '%' + search + '%',
+              },
+            },
+            {
+              Publisher: {
+                [Op.like]: '%' + search + '%',
+              },
+            },
+          ],
+        },
+        offset: offset,
+        limit: list_limit,
+        order: [[orderby, direction]],
       });
-    } catch (err) {
-      console.log(err)
-      res.status(400).send(err);
+
+      res.status(200).json({
+        result: result,
+        page: booklist_page,
+        limit: list_limit,
+        totalRows: totalRows,
+        totalPage: totalPage,
+      });
+    } catch (error) {
+      res.status(400).send(error);
     }
-  }
+  },
 }
+
