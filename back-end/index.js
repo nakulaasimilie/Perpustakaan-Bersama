@@ -5,6 +5,7 @@ const db = require("./models");
 const cors = require("cors")
 const bearerToken = require("express-bearer-token");
 
+
 require("dotenv").config()
 
 server.use(express.json());
