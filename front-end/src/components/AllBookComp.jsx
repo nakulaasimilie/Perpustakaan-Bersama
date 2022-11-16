@@ -1,10 +1,8 @@
-
 import { Box, Button, Icon, Text, useToast, Image, Stack, Flex, FormControl, Select, InputGroup, Input, InputRightElement, FormHelperText, Tooltip, useColorModeValue, Center, FormLabel } from '@chakra-ui/react';
 
 import { IoCartOutline } from "react-icons/io5";
 // import NextLink from 'next/link';
 import Axios from "axios";
-import { useFetcher } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { syncData } from '../redux/bookSlice';
@@ -22,8 +20,8 @@ export default function BookCard() {
     const [totalPage, setTotalPage] = useState(0)
     const [order, setOrder] = useState("Title")
     const [order_direction, setOrder_direction] = useState("ASC")
+
     const dispatch = useDispatch();
-    const Items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     const data = useSelector((state) => state.bookSlice.value);
 
     const url = `http://localhost:2000/book/view2?search_query=${searchProduct}&page=${page}&limit=${limit}&order=${order ? order :`Title`}&order_direction=${order_direction ? order_direction : 'ASC'}`
