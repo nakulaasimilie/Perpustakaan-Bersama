@@ -62,7 +62,7 @@ export default function NavbarComp() {
             NIM: inputNIM.current.value,
         };
 
-        console.log(user)
+        // console.log(user)
 
         const result = await Axios.post(url, user);
     
@@ -148,7 +148,7 @@ export default function NavbarComp() {
             <Input type="text" placeholder="NIM" ref={inputNIM} />
           </FormControl>
           <FormControl id="Password" >
-            <Input type="text" placeholder="Password" ref={inputPASS}/>
+            <Input type="password" placeholder="Password" ref={inputPASS}/>
           </FormControl>
 
           <Button
@@ -358,7 +358,7 @@ const MobileNav = () => {
             <Input type="text" placeholder="NIM" ref={inputNIM}/>
           </FormControl>
           <FormControl id="Password" >
-            <Input type="text" placeholder="Password" ref={inputPASS}/>
+            <Input type="password" placeholder="Password" ref={inputPASS}/>
           </FormControl>
 
         <Stack direction="row">
