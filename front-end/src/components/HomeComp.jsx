@@ -1,10 +1,11 @@
 import React from 'react';
-import { Box, IconButton, useBreakpointValue, Center, Image, Text, Stack, Heading, useColorModeValue } from '@chakra-ui/react';
+import { Box, IconButton, useBreakpointValue, Center, Image, Text, Stack, Heading, useColorModeValue, Button, Icon } from '@chakra-ui/react';
 // Here we have used react-icons package for the icons
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
 // And react-slick as our Carousel Lib
 import Slider from 'react-slick';
 import { useState } from 'react';
+import { IoCartOutline } from "react-icons/io5";
 
 // Settings for the slider
 const settings = {
@@ -102,7 +103,6 @@ export default function HomeComp() {
       </Slider>
     </Box>
     </Center>
-
     </>
   );
 }
