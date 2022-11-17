@@ -24,7 +24,7 @@ export default function BookCard() {
     const dispatch = useDispatch();
     const data = useSelector((state) => state.bookSlice.value);
 
-    const url = `http://localhost:2000/book/view2?search_query=${searchProduct}&page=${page}&limit=${limit}&order=${order ? order :`Title`}&order_direction=${order_direction ? order_direction : 'ASC'}`
+    const url = `http://localhost:2000/book/view2?search_query=${searchProduct}&page=${page}&limit=${limit}&order=${order ? order :`id`}&order_direction=${order_direction ? order_direction : 'ASC'}`
 
 
     const getData = async () => {
