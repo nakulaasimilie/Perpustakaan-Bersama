@@ -45,7 +45,6 @@ module.exports = {
   getById: async (req, res) => {
     try {
       const users = await book.findOne({
-        // include: book,
         where: {
           id: req.params.id,
         },

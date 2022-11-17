@@ -11,6 +11,7 @@ import { BsFilterLeft } from 'react-icons/bs';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ReactPaginate from 'react-paginate';
+import { Link } from 'react-router-dom';
 
 
 export default function BookCard() {
@@ -168,7 +169,7 @@ export default function BookCard() {
                 </Box>
 
                 <Box px='10px' h='90px'>
-                <Box h='50px'>
+                <Box h='50px' as={Link} to={`/detail/${item.id}`} >
                     <Text _hover={{ cursor: 'pointer', color: "pink" }} fontWeight='bold'>
                         {item.Title.substring(0, 25)}{item.Title.length >= 25 ? '...' : null}
                     </Text>
