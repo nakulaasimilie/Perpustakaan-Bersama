@@ -17,6 +17,7 @@ import {
   useColorModeValue,
   Center,
   FormLabel,
+  Link,
 } from '@chakra-ui/react';
 
 import { IoCartOutline } from 'react-icons/io5';
