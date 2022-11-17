@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import "./index.css";
 import { login } from "./redux/userSlice";
 import NavbarComp from "./components/NavbarComp";
+import { VerificationPage } from "./pages/verificationPage"
 import './App.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         NIM: res.data.NIM,
         username: res.data.username,
         email: res.data.email,
+        isVerified: res.data.isVerified
       }));
       
     } catch (err) {
@@ -50,6 +52,7 @@ function App() {
             </>
           }
         />
+          <Route path="/verification/:token" element={<VerificationPage />} />
       </Routes>
     </div>
   );

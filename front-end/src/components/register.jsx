@@ -44,6 +44,7 @@ export const Register = () => {
                 NIM: result.data.NIM,
                 username: result.data.username,
                 email: result.data.email,
+                isVerified: result.data.isVerified,
             }));
 
             localStorage.setItem("token", result.data.token);

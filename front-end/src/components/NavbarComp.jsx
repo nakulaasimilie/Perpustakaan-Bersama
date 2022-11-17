@@ -35,20 +35,23 @@ import {
 } from "@chakra-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, login } from "../redux/userSlice";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Swal from 'sweetalert2'
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const url = "http://localhost:2000/user/login"
 
 export default function NavbarComp() {
-  const { NIM, username } = useSelector((state) => state.userSlice.value)
+  const { NIM, username, isVerified } = useSelector((state) => state.userSlice.value)
   const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const tokenlocalstorage = localStorage.getItem("token");
   const dispatch = useDispatch();
   const inputNIM = useRef("");
   const inputPASS = useRef("");
+  let [token, setToken] = useState("")
+  let navigate = useNavigate()
 
   const onLogout = () => {
     dispatch(logout());
@@ -70,6 +73,7 @@ export default function NavbarComp() {
             NIM: result.data.isUserExist.NIM,
             username: result.data.isUserExist.username,
             email: result.data.isUserExist.email,
+            isVerified: result.data.isUserExist.isVerified,
         }));
 
         localStorage.setItem("token", result.data.token);
@@ -85,6 +89,31 @@ export default function NavbarComp() {
             }
         })
     }}
+
+    const onVerification = async () => {
+      try {
+          const result = await Axios.post("http://localhost:2000/user/changeotp", {NIM});
+          setToken(result.data.token)
+          Swal.fire({
+              icon: 'success',
+              title: 'Good Job',
+              text: `${result.data.massage}`,
+              timer: 2000,
+              customClass: {
+                  container: 'my-swal'
+              }
+          })
+          setTimeout(() => navigate(`/verification/${result.data.token}`), 2000);
+      } catch (err) {
+          Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: `${err.response.data}`,
+              customClass: {
+                  container: 'my-swal'
+              }
+          })
+      }};
 
   return (
     <Box>
@@ -136,6 +165,7 @@ export default function NavbarComp() {
         <MenuList alignItems={"center"}>
           <MenuItem >Profile</MenuItem>
           <MenuItem onClick={onLogout} >Log Out</MenuItem>
+          {isVerified ? "" : <MenuItem onClick={onVerification}>Verifikasi Akun</MenuItem> }
         </MenuList>
       </Menu>
         : 
@@ -275,10 +305,11 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
 
 const MobileNav = () => {
   const tokenlocalstorage = localStorage.getItem("token");
-  const { NIM, username } = useSelector((state) => state.userSlice.value)
+  const { NIM, username, isVerified } = useSelector((state) => state.userSlice.value)
   const dispatch = useDispatch();
   const inputNIM = useRef("");
   const inputPASS = useRef("");
+  let [token, setToken] = useState("")
 
   const onLogout = () => {
     dispatch(logout());
@@ -316,6 +347,31 @@ const MobileNav = () => {
         })
     }}
 
+    const onVerification = async () => {
+      try {
+          const result = await Axios.post("http://localhost:2000/user/changeotp", {NIM});
+          setToken(result.data.token)
+          Swal.fire({
+              icon: 'success',
+              title: 'Good Job',
+              text: `${result.data.massage}`,
+              timer: 2000,
+              customClass: {
+                  container: 'my-swal'
+              }
+          })
+          // setTimeout(() => setMove(true), 2000);
+      } catch (err) {
+          Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: `${err.response.data}`,
+              customClass: {
+                  container: 'my-swal'
+              }
+          })
+      }};
+
   return (
     <>
     <Stack
@@ -346,6 +402,7 @@ const MobileNav = () => {
         <MenuList alignItems={"center"}>
           <MenuItem >Profile</MenuItem>
           <MenuItem onClick={onLogout} >Log Out</MenuItem>
+          {isVerified ? "" : <MenuItem onClick={onVerification} >Verifikasi Akun</MenuItem> }
         </MenuList>
       </Menu>
       

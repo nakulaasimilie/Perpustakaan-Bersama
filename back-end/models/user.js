@@ -37,9 +37,8 @@ module.exports = (sequelize, DataTypes) => {
                 len: [8],
                 },
             },
-            isAdmin: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
+            code_otp: {
+                type: DataTypes.STRING
             },
             isVerified: {
                 type: DataTypes.BOOLEAN,
