@@ -11,6 +11,8 @@ router.patch("/list", book.update);
 router.get("/list/total", book.totalBooks);
 router.get("/search", book.searchBy);
 router.get("/view2", book.view2);
+router.get("/sort", book.sortBy);
+router.post("/uploaded/:id", multerUpload.single("file"), book.uploadFile)
 // router.get("/list/title", book.getByTitle);
 // router.get("/author", book.getByAuthor);
 // router.get("/genre", book.getByGenre);

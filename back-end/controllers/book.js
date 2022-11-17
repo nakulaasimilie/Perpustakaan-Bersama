@@ -150,6 +150,50 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+  sortBy: async (req, res) => {
+    try {
+      const { data, order } = req.query;
+      const users = await book.findAll({
+        order: [[data, order]],
+      });
+      res.status(200).send(users);
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
+  uploadFile: async (req, res) => {
+    try {
+      let fileUploaded = req.file;
+      console.log("controller", fileUploaded);
+      await book.update(
+        {
+          Images: fileUploaded.filename,
+        },
+        {
+          where: {
+            id: req.body.id,
+          },
+        }
+      );
+      const getBook = await book.findOne({
+        where: {
+          id: req.body.id,
+        },
+        raw: true,
+      });
+      res.status(200).send({
+        id: getBook.id,
+        Title: getBook.Title,
+        Images: getBook.Images,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
   view2: async (req, res) => {
     try {
       const { page, limit, search_query, order, order_direction } = req.query;
