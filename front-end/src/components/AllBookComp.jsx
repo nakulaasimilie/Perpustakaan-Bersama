@@ -236,10 +236,8 @@ export default function BookCard() {
                 </Box>
 
                 <Box px='10px' h='90px'>
-                  <Box h='50px'>
+                  <Box h='50px' as={Link} to={`/detail/${item.id}`}>
                     <Text
-                      as={Link}
-                      to={`/detail/${item.id}`}
                       _hover={{ cursor: 'pointer', color: 'pink' }}
                       fontWeight='bold'>
                       {item.Title.substring(0, 25)}

@@ -19,43 +19,28 @@ import {
 import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import { MdLocalShipping } from 'react-icons/md';
 import Axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { useRef } from 'react';
-import { syncData } from '../redux/bookSlice';
-
-const url = `http://localhost:2000/book/list/:id`;
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 export default function DetailPage() {
-  const { Title, Author, Genre, Publisher } = useSelector(
-    (state) => state.bookSlice.value
-  );
-  const dispatch = useDispatch();
-  const inputTitle = useRef();
-  const inputAuthor = useRef();
-  const inputGenre = useRef();
-  const inputPublisher = useRef();
+  const params = useParams();
+  const [data, setData] = useState();
 
   const getBook = async () => {
     try {
-      // const book = {
-      //   Title: inputTitle.current.value,
-      //   Author: inputAuthor.current.value,
-      //   Genre: inputGenre.current.value,
-      //   Publisher: inputPublisher.current.value,
-      // };
-      // const result = await Axios.get(url, book);
-      // dispatch(
-      //   syncData({
-      //     Title: result.data.users.Title,
-      //     Author: result.data.users.Author,
-      //     Genre: result.data.users.Genre,
-      //     Publisher: result.data.users.Publisher,
-      //   })
-      // );
+      const result = await Axios.get(
+        `http://localhost:2000/book/list/${params.id}`
+      );
+      console.log(result.data);
+      setData(result.data);
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    getBook();
+  }, []);
 
   return (
     <Container maxW={'7xl'}>
@@ -66,10 +51,8 @@ export default function DetailPage() {
         <Flex>
           <Image
             rounded={'md'}
-            alt={'product image'}
-            src={
-              'https://images.unsplash.com/photo-1596516109370-29001ec8ec36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyODE1MDl8MHwxfGFsbHx8fHx8fHx8fDE2Mzg5MzY2MzE&ixlib=rb-1.2.1&q=80&w=1080'
-            }
+            alt={data?.Title}
+            src={data?.Images}
             fit={'cover'}
             align={'center'}
             w={'100%'}
@@ -82,13 +65,13 @@ export default function DetailPage() {
               lineHeight={1.1}
               fontWeight={600}
               fontSize={{ base: '2xl', sm: '4xl', lg: '5xl' }}>
-              Title
+              {data?.Title}
             </Heading>
             <Text
               color={useColorModeValue('gray.900', 'gray.400')}
               fontWeight={300}
               fontSize={'2xl'}>
-              Fiction
+              {data?.Genre}
             </Text>
           </Box>
 
@@ -108,12 +91,7 @@ export default function DetailPage() {
                 textAlign={'left'}>
                 Abstract
               </Text>
-              <Text fontSize={'lg'}>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad
-                aliquid amet at delectus doloribus dolorum expedita hic, ipsum
-                maxime modi nam officiis porro, quae, quisquam quos
-                reprehenderit velit? Natus, totam.
-              </Text>
+              <Text fontSize={'lg'}>{data?.Abstract}</Text>
             </VStack>
             <Box>
               <Text
@@ -127,7 +105,7 @@ export default function DetailPage() {
 
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
                 <List spacing={2}>
-                  <ListItem>Chronograph</ListItem>
+                  <ListItem>{data?.Author}</ListItem>
                 </List>
               </SimpleGrid>
             </Box>
@@ -144,7 +122,7 @@ export default function DetailPage() {
               <List spacing={2}>
                 <ListItem>
                   <Text as={'span'} fontWeight={'bold'}>
-                    Between lugs:
+                    {data?.Publisher}
                   </Text>{' '}
                 </ListItem>
               </List>

@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import './index.css';
 import { login } from './redux/userSlice';
 import NavbarComp from './components/NavbarComp';
+import { VerificationPage } from './pages/verificationPage';
 import './App.css';
 import DetailPage from './pages/DetailPage';
 
@@ -49,7 +50,7 @@ function App() {
             </>
           }
         />
-        <Route path='/detail/:id' element={<DetailPage />} />
+        <Route path='/verification/:token' element={<VerificationPage />} />
       </Routes>
     </div>
   );
