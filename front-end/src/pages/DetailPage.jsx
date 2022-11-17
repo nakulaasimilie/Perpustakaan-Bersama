@@ -37,22 +37,21 @@ export default function DetailPage() {
 
   const getBook = async () => {
     try {
-      const book = {
-        Title: inputTitle.current.value,
-        Author: inputAuthor.current.value,
-        Genre: inputGenre.current.value,
-        Publisher: inputPublisher.current.value,
-      };
-      const result = await Axios.get(url, book);
-
-      dispatch(
-        syncData({
-          Title: result.data.users.Title,
-          Author: result.data.users.Author,
-          Genre: result.data.users.Genre,
-          Publisher: result.data.users.Publisher,
-        })
-      );
+      // const book = {
+      //   Title: inputTitle.current.value,
+      //   Author: inputAuthor.current.value,
+      //   Genre: inputGenre.current.value,
+      //   Publisher: inputPublisher.current.value,
+      // };
+      // const result = await Axios.get(url, book);
+      // dispatch(
+      //   syncData({
+      //     Title: result.data.users.Title,
+      //     Author: result.data.users.Author,
+      //     Genre: result.data.users.Genre,
+      //     Publisher: result.data.users.Publisher,
+      //   })
+      // );
     } catch (err) {
       console.log(err);
     }

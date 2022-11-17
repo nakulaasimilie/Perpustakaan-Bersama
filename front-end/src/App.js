@@ -7,6 +7,7 @@ import './index.css';
 import { login } from './redux/userSlice';
 import NavbarComp from './components/NavbarComp';
 import './App.css';
+import DetailPage from './pages/DetailPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ function App() {
             </>
           }
         />
+        <Route path='/detail/:id' element={<DetailPage />} />
       </Routes>
     </div>
   );
