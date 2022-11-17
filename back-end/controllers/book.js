@@ -203,13 +203,9 @@ module.exports = {
         Title: getBook.Title,
         Images: getBook.Images,
       });
-<<<<<<< HEAD
-
-=======
     } catch (err) {
       console.log(err)
       res.status(400).send(err);
     }
   }
 }
->>>>>>> eca6cb28445ec55be734414d4a2268987bf52ff8
