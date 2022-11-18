@@ -1,6 +1,6 @@
-const { Op } = require("sequelize");
-const { sequelize } = require("../models");
-const db = require("../models");
+const { Op } = require('sequelize');
+const { sequelize } = require('../models');
+const db = require('../models');
 const book = db.Book;
 
 module.exports = {
@@ -8,7 +8,7 @@ module.exports = {
     try {
       const { Title, Author, Genre, Publisher, Abstract, Images } = req.body;
       if (!Title && !Author && !Genre && !Publisher && !Abstract && !Images)
-        throw "required field";
+        throw 'required field';
       const data = await book.create({
         Title,
         Author,
@@ -17,7 +17,7 @@ module.exports = {
         Abstract,
         Images,
       });
-      res.status(200).send("Successfully Added");
+      res.status(200).send('Successfully Added');
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
@@ -27,12 +27,12 @@ module.exports = {
     try {
       const users = await book.findAll({
         attributes: [
-          "Title",
-          "Author",
-          "Genre",
-          "Publisher",
-          "Abstract",
-          "Images",
+          'Title',
+          'Author',
+          'Genre',
+          'Publisher',
+          'Abstract',
+          'Images',
         ],
       });
       res.status(200).send(users);
@@ -62,10 +62,10 @@ module.exports = {
       const users = await book.findAll({
         where: {
           [Op.or]: {
-            Title: Title ? Title : "",
-            Author: Author ? Author : "",
-            Genre: Genre ? Genre : "",
-            Publisher: Publisher ? Publisher : "",
+            Title: Title ? Title : '',
+            Author: Author ? Author : '',
+            Genre: Genre ? Genre : '',
+            Publisher: Publisher ? Publisher : '',
           },
         },
         raw: true,
@@ -103,7 +103,7 @@ module.exports = {
   totalBooks: async (req, res) => {
     try {
       const users = await book.findAll({
-        attributes: [[sequelize.fn("count", sequelize.col(`id`)), "total"]],
+        attributes: [[sequelize.fn('count', sequelize.col(`id`)), 'total']],
       });
       res.status(200).send(users);
     } catch (err) {
@@ -165,7 +165,7 @@ module.exports = {
   uploadFile: async (req, res) => {
     try {
       let fileUploaded = req.file;
-      console.log("controller", fileUploaded);
+      console.log('controller', fileUploaded);
       await book.update(
         {
           Images: fileUploaded.filename,
@@ -197,7 +197,7 @@ module.exports = {
     try {
       const { page, limit, search_query, order, order_direction } = req.query;
       const booklist_page = parseInt(page) || 0;
-      const list_limit = parseInt(limit) || 5;
+      const list_limit = parseInt(limit) || 10;
       const search = search_query || '';
       const offset = list_limit * booklist_page;
       const orderby = order || 'Title';
@@ -260,4 +260,4 @@ module.exports = {
       res.status(400).send(error);
     }
   },
-}
+};
