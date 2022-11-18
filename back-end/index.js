@@ -13,9 +13,10 @@ server.use(cors());
 server.use(express.static("./Public"));
 server.use(bearerToken());
 
-const { bookRoutes, userRoutes } = require("./routers");
+const { bookRoutes, userRoutes, adminRoutes } = require("./routers");
 server.use("/book", bookRoutes);
 server.use("/user", userRoutes);
+server.use("/admin", adminRoutes);
 
 server.listen(PORT, () => {
     // db.sequelize.sync({ alter: true });
