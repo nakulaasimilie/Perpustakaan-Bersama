@@ -52,7 +52,15 @@ function App() {
           }
         />
         <Route path='/verification/:token' element={<VerificationPage />} />
-        <Route path='/detail/:id' element={<DetailPage />} />
+        <Route
+          path='/detail/:id'
+          element={
+            <>
+              <NavbarComp />
+              <DetailPage />
+            </>
+          }
+        />
       </Routes>
     </div>
   );
