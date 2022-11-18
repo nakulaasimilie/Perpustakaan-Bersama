@@ -30,6 +30,7 @@ import { BsFilterLeft } from 'react-icons/bs';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import ReactPaginate from 'react-paginate';
+import { Link } from 'react-router-dom';
 
 export default function BookCard() {
   const [limit, setLimit] = useState(10);
