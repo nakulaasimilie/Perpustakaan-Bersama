@@ -1,20 +1,20 @@
 import {
-  Box,
-  chakra,
-  Container,
-  Stack,
-  Text,
-  Image,
-  Flex,
-  VStack,
-  Button,
-  Heading,
-  SimpleGrid,
-  StackDivider,
-  useColorModeValue,
-  VisuallyHidden,
-  List,
-  ListItem,
+    Box,
+    chakra,
+    Container,
+    Stack,
+    Text,
+    Image,
+    Flex,
+    VStack,
+    Button,
+    Heading,
+    SimpleGrid,
+    StackDivider,
+    useColorModeValue,
+    VisuallyHidden,
+    List,
+    ListItem,
 } from '@chakra-ui/react';
 import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import { MdLocalShipping } from 'react-icons/md';
@@ -23,148 +23,137 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 export default function DetailPage() {
-  const params = useParams();
-  const [data, setData] = useState();
+    const params = useParams();
+    const [data, setData] = useState()
 
-  const getBook = async () => {
-    try {
-      const result = await Axios.get(
-        `http://localhost:2000/book/list/${params.id}`
-      );
-      console.log(result.data);
-      setData(result.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    const getBook = async () => {
+        try {
+            const result = await Axios.get(`http://localhost:2000/book/list/${params.id}`);
+            console.log(result.data)
+            setData(result.data)
 
-  useEffect(() => {
-    getBook();
-  }, []);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
-  return (
+    useEffect(() => {
+        getBook()
+    }, [])
+
+    return (
     <Container maxW={'7xl'}>
-      <SimpleGrid
+        <SimpleGrid
         columns={{ base: 1, lg: 2 }}
         spacing={{ base: 8, md: 10 }}
         py={{ base: 18, md: 24 }}>
         <Flex>
-          <Box
-            w='380px'
-            h='493px'
-            borderWidth='1px'
-            m='10px'
-            boxShadow='base'
-            borderRadius='13px'>
-            <Box h='155px' w='full' borderTopRadius='13px'>
-              <Image
-                rounded={'md'}
-                alt={data?.Title}
-                src={data?.Images}
-                fit={'cover'}
-                align={'center'}
-                w={'100%'}
-                h={{ base: '100%', sm: '400px', lg: '500px' }}
-              />
-            </Box>
-          </Box>
+
+            <Image
+            rounded={'md'}
+            alt={data?.Title}
+            src={data?.Images}
+            fit={'cover'}
+            align={'center'}
+            w={'100%'}
+            h={{ base: '100%', sm: '400px', lg: '500px' }}
+            />
         </Flex>
         <Stack spacing={{ base: 6, md: 10 }}>
-          <Box as={'header'}>
+            <Box as={'header'}>
             <Heading
-              lineHeight={1.1}
-              fontWeight={600}
-              fontSize={{ base: '2xl', sm: '4xl', lg: '5xl' }}
-              textColor='#FF6B6B'>
-              {data?.Title}
+                lineHeight={1.1}
+                fontWeight={600}
+                fontSize={{ base: '2xl', sm: '4xl', lg: '5xl' }}>
+                {data?.Title}
             </Heading>
             <Text
-              color={useColorModeValue('gray.900', 'gray.400')}
-              mt={10}
-              fontWeight={300}
-              fontSize={'4xl'}>
-              {data?.Genre}
+                color={useColorModeValue('gray.900', 'gray.400')}
+                fontWeight={300}
+                fontSize={'2xl'}>
+                {data?.Genre}
             </Text>
-          </Box>
+            </Box>
 
-          <Stack
+            <Stack
             spacing={{ base: 4, sm: 6 }}
             direction={'column'}
             divider={
-              <StackDivider
+                <StackDivider
                 borderColor={useColorModeValue('gray.200', 'gray.600')}
-              />
+                />
             }>
-            <VStack spacing={{ base: 4, sm: 1 }}>
-              <Text
+            <VStack spacing={{ base: 4, sm: 6 }}>
+                <Text
                 color={useColorModeValue('gray.500', 'gray.400')}
                 fontSize={'2xl'}
-                fontWeight={'bold'}
+                fontWeight={'300'}
                 textAlign={'left'}>
                 Abstract
-              </Text>
-              <Text fontSize={'lg'}>{data?.Abstract}</Text>
+                </Text>
+                <Text fontSize={'lg'}>
+                {data?.Abstract}
+                </Text>
             </VStack>
             <Box>
-              <Text
-                fontSize={{ base: '10px', lg: '25px' }}
-                textColor='#FF6B6B'
+                <Text
+                fontSize={{ base: '16px', lg: '18px' }}
+                color={useColorModeValue('yellow.500', 'yellow.300')}
+
                 fontWeight={'500'}
                 textTransform={'uppercase'}
                 mb={'4'}>
                 Author
-              </Text>
+                </Text>
 
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
                 <List spacing={2}>
-                  <Text as={'span'} fontWeight={'bold'}>
                     <ListItem>{data?.Author}</ListItem>
-                  </Text>
                 </List>
-              </SimpleGrid>
+                </SimpleGrid>
             </Box>
             <Box>
-              <Text
-                fontSize={{ base: '10px', lg: '25px' }}
-                textColor='#FF6B6B'
+                <Text
+                fontSize={{ base: '16px', lg: '18px' }}
+                color={useColorModeValue('yellow.500', 'yellow.300')}
                 fontWeight={'500'}
                 textTransform={'uppercase'}
                 mb={'4'}>
                 Publisher
-              </Text>
+                </Text>
 
-              <List spacing={2}>
+                <List spacing={2}>
                 <ListItem>
-                  <Text as={'span'} fontWeight={'bold'}>
+                    <Text as={'span'} fontWeight={'bold'}>
                     {data?.Publisher}
-                  </Text>{' '}
+                    </Text>{' '}
                 </ListItem>
-              </List>
+                </List>
             </Box>
-          </Stack>
+            </Stack>
 
-          <Button
-            rounded={'30px'}
+            <Button
+            rounded={'none'}
             w={'full'}
             mt={8}
             size={'lg'}
             py={'7'}
-            bg={'#FF6B6B'}
+            bg={useColorModeValue('gray.900', 'gray.50')}
             color={useColorModeValue('white', 'gray.900')}
             textTransform={'uppercase'}
             _hover={{
-              transform: 'translateY(2px)',
-              boxShadow: 'lg',
+                transform: 'translateY(2px)',
+                boxShadow: 'lg',
             }}>
             Borrow
-          </Button>
+            </Button>
 
-          <Stack direction='row' alignItems='center' justifyContent={'center'}>
+            <Stack direction='row' alignItems='center' justifyContent={'center'}>
             <MdLocalShipping />
             <Text>2-3 business days delivery</Text>
-          </Stack>
+            </Stack>
         </Stack>
-      </SimpleGrid>
+        </SimpleGrid>
     </Container>
-  );
+    );
 }
