@@ -33,9 +33,9 @@ import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
 
 export default function BookCard() {
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
   const [searchProduct, setSearchProduct] = useState('');
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState('Title');
   const [order_direction, setOrder_direction] = useState('ASC');
@@ -43,14 +43,19 @@ export default function BookCard() {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.bookSlice.value);
 
-  const url = `http://localhost:2000/book/view2?search_query=${searchProduct}&page=${page}&limit=${limit}&order=${
-    order ? order : `id`
-  }&order_direction=${order_direction ? order_direction : 'ASC'}`;
+  const url = `http://localhost:2000/book/view2?search_query=${searchProduct}&page=${
+    page - 1
+  }&limit=${limit}&order=${order ? order : `id`}&order_direction=${
+    order_direction ? order_direction : 'ASC'
+  }`;
 
   const getData = async () => {
     try {
       const res = await Axios.get(url);
       dispatch(syncData(res.data.result));
+      console.log(res.data.totalPage);
+      console.log(res.data);
+      setTotalPage(Math.ceil(res.data.totalRows / res.data.limit));
     } catch (err) {
       console.log(err);
     }
@@ -83,7 +88,7 @@ export default function BookCard() {
 
   useEffect(() => {
     getData();
-  }, [searchProduct, limit, page, totalPage, order, order_direction]);
+  }, [searchProduct, limit, totalPage, order, order_direction, page]);
 
   useEffect(() => {
     fetchProduct();
@@ -154,11 +159,6 @@ export default function BookCard() {
                     onChange={(event) => {
                       fetchProduct(event.target.value);
                     }}>
-                    <option value=''>
-                      <Text color={useColorModeValue('black', 'white')}>
-                        -- Pilih --
-                      </Text>
-                    </option>
                     <option value='ASC'>A-Z</option>
                     <option value='DESC'>Z-A</option>
                   </Select>
@@ -169,11 +169,6 @@ export default function BookCard() {
                     onChange={(event) => {
                       fetchLimit(event.target.value);
                     }}>
-                    <option value=''>
-                      <Text color={useColorModeValue('black', 'white')}>
-                        -- Show --
-                      </Text>
-                    </option>
                     <option value='5'>5</option>
                     <option value='10'>10</option>
                     <option value='50'>50</option>
@@ -286,15 +281,52 @@ export default function BookCard() {
         </Flex>
       </Center>
 
-      {/* <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        // onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        pageCount={10}
-        previousLabel="< previous"
-        renderOnZeroPageCount={null}
-    /> */}
+      <Box display='flex' justifyContent='center' alignContent='center'>
+        <Button
+          onClick={() => {
+            async function submit() {
+              setPage(page === 1 ? 1 : page - 1);
+            }
+            submit();
+            var pageNow = page - 1;
+            pageNow = pageNow <= 0 ? 1 : pageNow;
+            document.getElementById('pagingInput').value = parseInt(pageNow);
+          }}
+          size='sm'
+          m='3px'
+          borderColor='pink.400'
+          borderRadius='9px'
+          bg='white'
+          borderWidth='2px'
+          bgColor='inherit'
+          _hover={{ bg: 'pink' }}>
+          Prev
+        </Button>
+        <Text alignSelf='center' mx='5px'>
+          {' '}
+          {page} of {totalPage}
+        </Text>
+        <Button
+          onClick={() => {
+            async function submit() {
+              setPage(totalPage === page ? page : page + 1);
+            }
+            submit();
+            var pageNow = page + 1;
+            pageNow = pageNow > totalPage ? page : pageNow;
+            document.getElementById('pagingInput').value = parseInt(pageNow);
+          }}
+          size='sm'
+          m='3px'
+          borderColor='pink.400'
+          borderRadius='9px'
+          bg='white'
+          borderWidth='2px'
+          bgColor='inherit'
+          _hover={{ bg: 'pink' }}>
+          Next
+        </Button>
+      </Box>
     </>
   );
 }
