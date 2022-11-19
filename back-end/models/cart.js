@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
             note: {
                 type: DataTypes.STRING(300),
                 allowNull: true,
-
             },
         },
         {

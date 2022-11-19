@@ -255,9 +255,15 @@ module.exports = {
         offset: offset,
         limit: list_limit,
         order: [[orderby, direction]],
+        include: [
+          {
+            model: cart,
+            attributes: ["id", "UserNIM"],
+          }
+        ],
       });
 
-      res.status(200).json({
+      res.status(200).send({
         result: result,
         page: booklist_page,
         limit: list_limit,
@@ -268,4 +274,4 @@ module.exports = {
       res.status(400).send(error);
     }
   },
-
+}
