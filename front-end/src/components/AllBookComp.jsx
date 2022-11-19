@@ -3,9 +3,7 @@ import {
   Button,
   Icon,
   Text,
-  useToast,
   Image,
-  Stack,
   Flex,
   FormControl,
   Select,
@@ -13,7 +11,6 @@ import {
   Input,
   InputRightElement,
   FormHelperText,
-  Tooltip,
   useColorModeValue,
   Center,
   FormLabel,
@@ -29,10 +26,11 @@ import { BiSearchAlt, BiReset } from 'react-icons/bi';
 import { BsFilterLeft } from 'react-icons/bs';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2'
 
 export default function BookCard() {
+  const { NIM, isVerified } = useSelector((state) => state.userSlice.value)
   const [limit, setLimit] = useState(10);
   const [searchProduct, setSearchProduct] = useState('');
   const [page, setPage] = useState(0);
@@ -55,6 +53,45 @@ export default function BookCard() {
       console.log(err);
     }
   };
+
+  const onAddCart = async (BookId) => {
+    try {
+      if (!NIM) {
+        return Swal.fire({
+        icon: 'error',
+        title: 'Oooops ...',
+        text: 'Login First',
+        timer: 2000,
+        customClass: {
+            container: 'my-swal'
+        }
+      });
+    }
+
+        const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Good Job',
+            text: `${result.data.massage}`,
+            timer: 2000,
+            customClass: {
+                container: 'my-swal'
+            }
+        })
+
+    } catch (err) {
+      console.log(err)
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `${err.response.data}`,
+            customClass: {
+                container: 'my-swal'
+            }
+        }) 
+      }
+    };
 
   async function fetchProduct(filter) {
     setOrder_direction(filter);
@@ -267,7 +304,7 @@ export default function BookCard() {
                     </Text>
                   </Box>
                 </Box>
-                <Box pb='12px' px='10px' h='40px'>
+                <Box pb='12px' px='10px' h='40px' onClick={() => onAddCart(item.id)}>
                   <Button
                     w='full'
                     borderColor='pink.400'
@@ -276,7 +313,7 @@ export default function BookCard() {
                     size='sm'
                     my='5px'
                     _hover={{ bg: 'pink', color: 'white' }}>
-                    <Icon boxSize='4' as={IoCartOutline} mr='5px' />
+                    <Icon boxSize='4' as={IoCartOutline} mr='5px'x />
                     Keranjang
                   </Button>
                 </Box>
