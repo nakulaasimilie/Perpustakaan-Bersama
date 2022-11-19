@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         // define association here
         Cart.belongsTo(models.User);
         Cart.belongsTo(models.Book);
-
     }
     }
     Cart.init(
@@ -19,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
             note: {
                 type: DataTypes.STRING(300),
                 allowNull: true,
+
             },
         },
         {

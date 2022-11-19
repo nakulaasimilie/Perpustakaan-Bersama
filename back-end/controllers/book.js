@@ -199,7 +199,7 @@ module.exports = {
     try {
       const { page, limit, search_query, order, order_direction } = req.query;
       const booklist_page = parseInt(page) || 0;
-      const list_limit = parseInt(limit) || 10;
+      const list_limit = parseInt(limit) || 5;
       const search = search_query || '';
       const offset = list_limit * booklist_page;
       const orderby = order || 'Title';
