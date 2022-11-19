@@ -70,6 +70,12 @@ module.exports = {
             Publisher: Publisher ? Publisher : '',
           },
         },
+        include: [
+          {
+            model: cart,
+            attributes: ["id", "UserNIM"],
+          }
+        ],
         raw: true,
       });
       res.status(200).send(users);

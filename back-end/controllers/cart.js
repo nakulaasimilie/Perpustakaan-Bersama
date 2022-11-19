@@ -2,6 +2,7 @@ const db = require("../models")
 const user = db.User
 const profile = db.Profile
 const cart = db.Cart
+const book = db.Book
 
 module.exports = {
     addCart: async (req, res) => {
@@ -26,7 +27,7 @@ module.exports = {
     },
     deleteCart: async (req, res) => {
         try {
-            const { id } = req.body;
+            const { id } = req.params;
 
             const data = await cart.destroy({
                 where: {
@@ -43,4 +44,28 @@ module.exports = {
             res.status(400).send(err);
         }
     },
-}
+    getCartBy: async (req, res) => {
+        try {
+            const { NIM } = req.params;
+            const carts = await cart.findAll({
+                attributes: ["id"],
+                where: {
+                    UserNIM: NIM,
+                },
+                include: [
+                {
+                    model: user,
+                    attributes: ["username"],
+                },
+                {
+                    model: book,
+                }
+                ],
+            });
+            res.status(200).send(carts);
+        } catch (err) {
+            console.log(err);
+            res.status(400).send(err);
+            }
+        },
+    }

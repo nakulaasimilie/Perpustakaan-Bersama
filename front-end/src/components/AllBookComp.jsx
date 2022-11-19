@@ -16,13 +16,14 @@ import Swal from 'sweetalert2'
 
 
 export default function BookCard() {
-  const { NIM, isVerified } = useSelector((state) => state.userSlice.value)
+  const { NIM, isVerified, cart } = useSelector((state) => state.userSlice.value)
   const [limit, setLimit] = useState(5);
   const [searchProduct, setSearchProduct] = useState('');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState('Title');
   const [order_direction, setOrder_direction] = useState('ASC');
+  const [idbook, setIdbook] = useState("");
 
     const dispatch = useDispatch();
     const data = useSelector((state) => state.bookSlice.value);
@@ -33,7 +34,6 @@ export default function BookCard() {
     const getData = async () => {
         try {
             const res = await Axios.get(url)
-            console.log(res.data)
 
             dispatch(syncData(res.data.result));
             setTotalPage(Math.ceil(res.data.totalRows / res.data.limit))
@@ -79,12 +79,23 @@ export default function BookCard() {
               timer: 2000,
               customClass: {
                   container: 'my-swal'
-              }
-            });
-          }
+                }
+              });
+            }
+            if (cart >= 5) {
+              return Swal.fire({
+              icon: 'error',
+              title: 'Oooops ...',
+              text: 'Keranjang Penuh',
+              timer: 2000,
+              customClass: {
+                  container: 'my-swal'
+                }
+              });
+            }
       
               const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
-      
+
               Swal.fire({
                   icon: 'success',
                   title: 'Good Job',
@@ -221,8 +232,20 @@ export default function BookCard() {
                         <Text fontWeight='bold' color='#213360' textColor='#FF6B6B' mr='5px'> {item.Author} </Text>
                 </Box>
                 </Box>
-                <Box pb='12px' px='10px' h='40px' onClick={() => onAddCart(item.id)}>
+                <Box pb='12px' px='10px' h='40px'>
+                  {item.Carts.find((item2) => item2["UserNIM"] === NIM) ?
                   <Button
+                    disabled
+                    w='full'
+                    borderRadius='9px'
+                    size='sm'
+                    my='5px'>
+                    <Icon boxSize='4' as={IoCartOutline} mr='5px'x />
+                    Keranjang
+                </Button>
+                :
+                  <Button
+                    onClick={() => onAddCart(item.id)}
                     w='full'
                     borderColor='pink.400'
                     borderRadius='9px'
@@ -233,6 +256,8 @@ export default function BookCard() {
                     <Icon boxSize='4' as={IoCartOutline} mr='5px'x />
                     Keranjang
                 </Button>
+                  
+                }
                 </Box>
             </Box>
         )

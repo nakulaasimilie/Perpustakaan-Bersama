@@ -11,7 +11,7 @@ import {
   Link,
   Popover,
   PopoverTrigger,
-  PopoverContent,
+  PopoverContent, PopoverHeader, PopoverArrow, PopoverCloseButton, PopoverBody, TableContainer, Table, Thead, Tr, Th, Td, Tbody, PopoverFooter, ButtonGroup, Badge,
   useColorModeValue,
   useDisclosure,
   useColorMode,
@@ -31,10 +31,13 @@ import {
   ChevronRightIcon,
   MoonIcon,
   SunIcon,
+  DeleteIcon,
 } from "@chakra-ui/icons";
+import { IoCartOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, login } from "../redux/userSlice";
-import { useRef, useState } from "react";
+import { syncData, delData } from "../redux/cartSlice";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -42,20 +45,22 @@ import { useNavigate } from "react-router-dom";
 const url = "http://localhost:2000/user/login";
 
 export default function NavbarComp() {
-  const { NIM, username, isVerified } = useSelector(
+  const { NIM, username, isVerified, profilePic, cart } = useSelector(
     (state) => state.userSlice.value
   );
+  const data = useSelector((state) => state.cartSlice.value);
+
   const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const tokenlocalstorage = localStorage.getItem("token");
   const dispatch = useDispatch();
   const inputNIM = useRef("");
   const inputPASS = useRef("");
-  let [token, setToken] = useState("");
   let navigate = useNavigate();
 
   const onLogout = () => {
     dispatch(logout());
+    dispatch(delData())
     localStorage.removeItem("token");
   };
 
@@ -66,9 +71,10 @@ export default function NavbarComp() {
         NIM: inputNIM.current.value,
       };
 
-      // console.log(user)
-
       const result = await Axios.post(url, user);
+
+      const res = await Axios.get(`http://localhost:2000/cart/${result.data.isUserExist.NIM}`);
+      dispatch(syncData(res.data))
 
       dispatch(
         login({
@@ -76,6 +82,7 @@ export default function NavbarComp() {
           username: result.data.isUserExist.username,
           email: result.data.isUserExist.email,
           isVerified: result.data.isUserExist.isVerified,
+          cart: res.data.length
         })
       );
 
@@ -98,7 +105,6 @@ export default function NavbarComp() {
       const result = await Axios.post("http://localhost:2000/user/changeotp", {
         NIM,
       });
-      setToken(result.data.token);
       Swal.fire({
         icon: "success",
         title: "Good Job",
@@ -120,6 +126,26 @@ export default function NavbarComp() {
       });
     }
   };
+
+  const onDeleteCart = async (id) => {
+    try {
+      await Axios.delete(`http://localhost:2000/cart/${id}`);
+
+      Swal.fire({
+          icon: 'success',
+          title: 'Good Job',
+          text: "Cart Berhasil Dihapus",
+          timer: 2000,
+          customClass: {
+              container: 'my-swal'
+          }
+      })
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
 
   return (
     <Box>
@@ -151,6 +177,69 @@ export default function NavbarComp() {
           {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
         </Button>
 
+        <Popover isLazy>
+          <PopoverTrigger>
+          <Button
+            bg={useColorModeValue("white", "gray.800")}
+          >
+            <Icon boxSize="6" as={IoCartOutline} mr='5px'x />
+            {username && cart !== 0 ?
+            <Badge p="1" ml="-2" mt="-3"  borderRadius="full"><Text fontSize="xx-small">{cart}</Text></Badge>
+            : null }
+          </Button>
+          </PopoverTrigger>
+          <PopoverContent>
+              <PopoverHeader fontWeight='semibold'>My Cart</PopoverHeader>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody>
+              <TableContainer bg="grey.100">
+                  <Table >
+                      <Thead>
+                      <Tr>
+                          <Th>Img</Th>
+                          <Th>Title</Th>
+                          <Th>Action</Th>
+                      </Tr>
+                      </Thead>
+                      <Tbody>
+                          {data?.map((item, index) => {
+                          return (
+                          <Tr key={index}>
+                              <Td><Stack><Image
+                                  boxSize='35px'
+                                  objectFit='cover'
+                                  src={item.Book.Images}
+                                  alt={item.Book.Title}
+                              /></Stack></Td>
+                              <Td>
+                                <Box display='flex' fontSize='xs'>
+                                  <Text fontWeight='bold' mr='5px'> {item.Book.Title} </Text>
+                                </Box>
+                                <Box display='flex' fontSize='xs'>
+                                  <Text fontWeight='bold' color='#213360' textColor='#FF6B6B' mr='5px'> {item.Book.Author} </Text>
+                                </Box>
+                              </Td>
+                              <Td>
+                                  <Button onClick={() => onDeleteCart(item.id)}>
+                                    <Icon boxSize="4" as={DeleteIcon} />
+                                  </Button>
+                              </Td>
+                          </Tr>
+                          );
+                      })}
+                      </Tbody>
+                      </Table>
+                  </TableContainer>
+              </PopoverBody>
+              <PopoverFooter display='flex' justifyContent='flex-end'>
+                  <ButtonGroup size='sm'>
+                  <Button colorScheme='pink' >Selengkapnya</Button>
+                  </ButtonGroup>
+              </PopoverFooter>
+          </PopoverContent>
+          </Popover>
+
         {tokenlocalstorage ? (
           <Menu>
             <MenuButton
@@ -161,14 +250,15 @@ export default function NavbarComp() {
               minW={0}
               p="6"
             >
-              <Flex>
+              <Flex align="center">
                 <Avatar
                   size="sm"
-                  src="https://avatars.dicebear.com/api/male/username.svg"
+                  name={username}
+                  src={profilePic}
                 />
                 <Box ml="3">
                   <Text fontWeight="bold">{username}</Text>
-                  <Text fontWeight="bold">{NIM}</Text>
+                  <Text fontSize="xs" >{NIM}</Text>
                 </Box>
               </Flex>
             </MenuButton>
@@ -316,7 +406,7 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
 
 const MobileNav = () => {
   const tokenlocalstorage = localStorage.getItem("token");
-  const { NIM, username, isVerified } = useSelector(
+  const { NIM, username, isVerified, profilePic } = useSelector(
     (state) => state.userSlice.value
   );
   const dispatch = useDispatch();
@@ -406,14 +496,14 @@ const MobileNav = () => {
           <Menu>
             <MenuButton>
               <Flex>
-                <Avatar
+              <Avatar
                   size="sm"
-                  src="https://avatars.dicebear.com/api/male/username.svg"
+                  name={username}
+                  src={profilePic}
                 />
                 <Box ml="3">
-                  <Text fontWeight="bold">
-                    {username} {NIM}
-                  </Text>
+                  <Text fontWeight="bold">{username}</Text>
+                  <Text fontSize="xs" >{NIM}</Text>
                 </Box>
               </Flex>
             </MenuButton>

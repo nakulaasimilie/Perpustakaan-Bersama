@@ -11,6 +11,7 @@ import { AdminPage } from "./pages/AdminPage";
 import { VerificationPage } from "./pages/verificationPage";
 import DetailPage from "./pages/DetailPage";
 import { AdminDashboard } from "./pages/AdminDashboard";
+import { syncData } from "./redux/cartSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,12 +25,17 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      const result = await Axios.get(`http://localhost:2000/cart/${res.data.NIM}`);
+      dispatch(syncData(result.data))
+
       dispatch(
         login({
           NIM: res.data.NIM,
           username: res.data.username,
           email: res.data.email,
           isVerified: res.data.isVerified,
+          cart: result.data.length
         })
       );
     } catch (err) {
