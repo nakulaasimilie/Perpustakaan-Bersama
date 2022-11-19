@@ -6,6 +6,6 @@ const admin = require("./admin");
 module.exports = {
   user,
   book,
-  cart
+  cart,
   admin,
 };
