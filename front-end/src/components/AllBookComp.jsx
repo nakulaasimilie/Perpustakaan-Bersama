@@ -43,81 +43,41 @@ export default function BookCard() {
         }
         };
         
-    const formik = useFormik({
-        initialValues: {
-            searchName: ``,
-        },
-        validationSchema: Yup.object().shape({
-            searchName: Yup.string()
-            .min(3, 'Minimal 3 huruf')
-        }),
-        validateOnChange: false,
-        onSubmit: async () => {
-            const { searchName } = formik.values;
-            
-            setSearchProduct(searchName)
-        }
-    })
-
-  const onAddCart = async (BookId) => {
-    try {
-      if (!NIM) {
-        return Swal.fire({
-        icon: 'error',
-        title: 'Oooops ...',
-        text: 'Login First',
-        timer: 2000,
-        customClass: {
-            container: 'my-swal'
-        }
-      });
-    }
-
-    const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
-
-    Swal.fire({
-        icon: 'success',
-        title: 'Good Job',
-        text: `${result.data.massage}`,
-        timer: 2000,
-        customClass: {
-            container: 'my-swal'
-        }
-    })
-
-    } catch (err) {
-      console.log(err)
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: `${err.response.data}`,
-            customClass: {
-                container: 'my-swal'
+        async function fetchProduct(filter) {
+                setOrder_direction(filter)
             }
-        }) 
-      }
-    };
+        async function fetchCategory(filter) {
+                setOrder(filter)
+            }
+        async function fetchLimit(filter) {
+                setLimit(filter)
+            }
+        
+        const formik = useFormik({
+            initialValues: {
+                searchName: ``,
+            },
+            validationSchema: Yup.object().shape({
+                searchName: Yup.string()
+                .min(3, 'Minimal 3 huruf')
+            }),
+            validateOnChange: false,
+            onSubmit: async () => {
+                const { searchName } = formik.values;
+                
+                setSearchProduct(searchName)
+            }
+        })
+        
+        useEffect(() => {
+            getData()
+        }, [searchProduct, limit, totalPage, order, order_direction, page])
 
-  async function fetchProduct(filter) {
-    setOrder_direction(filter);
-  }
-  async function fetchCategory(filter) {
-    setOrder(filter);
-  }
-  async function fetchLimit(filter) {
-    setLimit(filter);
-  }
-
-  useEffect(() => {
-      fetchProduct()
-      fetchCategory()
-      fetchLimit()
-  }, [])
-
-  useEffect(() => {
-    getData()
-  }, [searchProduct, limit, totalPage, order, order_direction, page])
-
+        useEffect(() => {
+            fetchProduct()
+            fetchCategory()
+            fetchLimit()
+        }, [])
 
     return (
         <>

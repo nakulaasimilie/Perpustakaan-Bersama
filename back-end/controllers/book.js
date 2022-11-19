@@ -227,6 +227,12 @@ module.exports = {
       });
       const totalPage = Math.ceil(totalRows / limit);
       const result = await book.findAll({
+        include: [
+          {
+            model: cart,
+            attributes: ["id", "UserNIM"],
+          }
+        ],
         where: {
           [Op.or]: [
             {
