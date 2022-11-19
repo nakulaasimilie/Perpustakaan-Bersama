@@ -16,7 +16,6 @@ function App() {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const { NIM } = useSelector((state) => state.userSlice.value);
-  console.log(NIM)
 
   const keepLogin = async () => {
     try {
@@ -25,15 +24,6 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      dispatch(
-        login({
-          NIM: res.data.NIM,
-          username: res.data.username,
-          email: res.data.email,
-
-        })
-      );
       dispatch(
         login({
           NIM: res.data.NIM,
@@ -54,11 +44,6 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       });
-      dispatch(
-        login({
-          username: res.data.username,
-        })
-      );
       dispatch(
         login({
           username: res.data.username,

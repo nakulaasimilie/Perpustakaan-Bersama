@@ -17,9 +17,9 @@ import Swal from 'sweetalert2'
 
 export default function BookCard() {
   const { NIM, isVerified } = useSelector((state) => state.userSlice.value)
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
   const [searchProduct, setSearchProduct] = useState('');
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState('Title');
   const [order_direction, setOrder_direction] = useState('ASC');
@@ -32,11 +32,10 @@ export default function BookCard() {
     
     const getData = async () => {
         try {
-    
             const res = await Axios.get(url)
-            dispatch(syncData(res.data.result));
-            console.log(res.data.totalPage)
             console.log(res.data)
+
+            dispatch(syncData(res.data.result));
             setTotalPage(Math.ceil(res.data.totalRows / res.data.limit))
             
         } catch (err) {
@@ -44,21 +43,21 @@ export default function BookCard() {
         }
         };
         
-        const formik = useFormik({
-            initialValues: {
-                searchName: ``,
-            },
-            validationSchema: Yup.object().shape({
-                searchName: Yup.string()
-                .min(3, 'Minimal 3 huruf')
-            }),
-            validateOnChange: false,
-            onSubmit: async () => {
-                const { searchName } = formik.values;
-                
-                setSearchProduct(searchName)
-            }
-        })
+    const formik = useFormik({
+        initialValues: {
+            searchName: ``,
+        },
+        validationSchema: Yup.object().shape({
+            searchName: Yup.string()
+            .min(3, 'Minimal 3 huruf')
+        }),
+        validateOnChange: false,
+        onSubmit: async () => {
+            const { searchName } = formik.values;
+            
+            setSearchProduct(searchName)
+        }
+    })
 
   const onAddCart = async (BookId) => {
     try {
@@ -74,17 +73,17 @@ export default function BookCard() {
       });
     }
 
-        const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
+    const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Good Job',
-            text: `${result.data.massage}`,
-            timer: 2000,
-            customClass: {
-                container: 'my-swal'
-            }
-        })
+    Swal.fire({
+        icon: 'success',
+        title: 'Good Job',
+        text: `${result.data.massage}`,
+        timer: 2000,
+        customClass: {
+            container: 'my-swal'
+        }
+    })
 
     } catch (err) {
       console.log(err)
@@ -110,14 +109,15 @@ export default function BookCard() {
   }
 
   useEffect(() => {
-    getData()
-}, [searchProduct, limit, totalPage, order, order_direction, page])
-
-  useEffect(() => {
       fetchProduct()
       fetchCategory()
       fetchLimit()
   }, [])
+
+  useEffect(() => {
+    getData()
+  }, [searchProduct, limit, totalPage, order, order_direction, page])
+
 
     return (
         <>
