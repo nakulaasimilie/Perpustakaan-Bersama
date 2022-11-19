@@ -1,5 +1,6 @@
 import { Box, Button, Icon, Text, useToast, Image, Stack, Flex, FormControl, Select, InputGroup, Input, InputRightElement, FormHelperText, Tooltip, useColorModeValue, Center, FormLabel } from '@chakra-ui/react';
 
+
 import { IoCartOutline } from "react-icons/io5";
 // import NextLink from 'next/link';
 import Axios from "axios";
@@ -8,19 +9,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { syncData } from '../redux/bookSlice';
 import { BiSearchAlt, BiReset } from 'react-icons/bi';
 import { BsFilterLeft } from 'react-icons/bs';
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import ReactPaginate from 'react-paginate';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2'
 
 
 export default function BookCard() {
-    const [limit, setLimit] = useState(5)
-    const [searchProduct, setSearchProduct] = useState('')
-    const [page, setPage] = useState(1)
-    const [totalPage, setTotalPage] = useState(0)
-    const [order, setOrder] = useState("Title")
-    const [order_direction, setOrder_direction] = useState("ASC")
+  const { NIM, isVerified } = useSelector((state) => state.userSlice.value)
+  const [limit, setLimit] = useState(10);
+  const [searchProduct, setSearchProduct] = useState('');
+  const [page, setPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
+  const [order, setOrder] = useState('Title');
+  const [order_direction, setOrder_direction] = useState('ASC');
 
     const dispatch = useDispatch();
     const data = useSelector((state) => state.bookSlice.value);
@@ -42,16 +44,6 @@ export default function BookCard() {
         }
         };
         
-        async function fetchProduct(filter) {
-                setOrder_direction(filter)
-            }
-        async function fetchCategory(filter) {
-                setOrder(filter)
-            }
-        async function fetchLimit(filter) {
-                setLimit(filter)
-            }
-        
         const formik = useFormik({
             initialValues: {
                 searchName: ``,
@@ -67,16 +59,65 @@ export default function BookCard() {
                 setSearchProduct(searchName)
             }
         })
-        
-        useEffect(() => {
-            getData()
-        }, [searchProduct, limit, totalPage, order, order_direction, page])
 
-        useEffect(() => {
-            fetchProduct()
-            fetchCategory()
-            fetchLimit()
-        }, [])
+  const onAddCart = async (BookId) => {
+    try {
+      if (!NIM) {
+        return Swal.fire({
+        icon: 'error',
+        title: 'Oooops ...',
+        text: 'Login First',
+        timer: 2000,
+        customClass: {
+            container: 'my-swal'
+        }
+      });
+    }
+
+        const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Good Job',
+            text: `${result.data.massage}`,
+            timer: 2000,
+            customClass: {
+                container: 'my-swal'
+            }
+        })
+
+    } catch (err) {
+      console.log(err)
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `${err.response.data}`,
+            customClass: {
+                container: 'my-swal'
+            }
+        }) 
+      }
+    };
+
+  async function fetchProduct(filter) {
+    setOrder_direction(filter);
+  }
+  async function fetchCategory(filter) {
+    setOrder(filter);
+  }
+  async function fetchLimit(filter) {
+    setLimit(filter);
+  }
+
+  useEffect(() => {
+    getData()
+}, [searchProduct, limit, totalPage, order, order_direction, page])
+
+  useEffect(() => {
+      fetchProduct()
+      fetchCategory()
+      fetchLimit()
+  }, [])
 
     return (
         <>
@@ -181,10 +222,16 @@ export default function BookCard() {
                         <Text fontWeight='bold' color='#213360' textColor='#FF6B6B' mr='5px'> {item.Author} </Text>
                 </Box>
                 </Box>
-                <Box pb='12px' px='10px' h='40px'>
-                <Button w='full' borderColor="pink.400" borderRadius='9px' borderWidth='2px' size='sm' my='5px'
-                    _hover={{ bg: "pink", color: 'white' }}>
-                    <Icon boxSize='4' as={IoCartOutline} mr='5px' />
+                <Box pb='12px' px='10px' h='40px' onClick={() => onAddCart(item.id)}>
+                  <Button
+                    w='full'
+                    borderColor='pink.400'
+                    borderRadius='9px'
+                    borderWidth='2px'
+                    size='sm'
+                    my='5px'
+                    _hover={{ bg: 'pink', color: 'white' }}>
+                    <Icon boxSize='4' as={IoCartOutline} mr='5px'x />
                     Keranjang
                 </Button>
                 </Box>

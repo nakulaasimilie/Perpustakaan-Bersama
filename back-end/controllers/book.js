@@ -2,6 +2,8 @@ const { Op } = require('sequelize');
 const { sequelize } = require('../models');
 const db = require('../models');
 const book = db.Book;
+const user = db.User;
+const cart = db.Cart;
 
 module.exports = {
   create: async (req, res) => {
@@ -225,6 +227,12 @@ module.exports = {
       });
       const totalPage = Math.ceil(totalRows / limit);
       const result = await book.findAll({
+        include: [
+          {
+            model: cart,
+            attributes: ["id", "UserNIM"],
+          }
+        ],
         where: {
           [Op.or]: [
             {
