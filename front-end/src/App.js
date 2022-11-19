@@ -12,6 +12,7 @@ import { VerificationPage } from "./pages/verificationPage";
 import DetailPage from "./pages/DetailPage";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { syncData } from "./redux/cartSlice";
+import CartPage from "./pages/CartPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -79,6 +80,7 @@ function App() {
         />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/dashboard" element={<AdminDashboard />} />
+        <Route path="/cart" element={<CartPage />} />
         <Route path="/verification/:token" element={<VerificationPage />} />
         <Route path="/detail/:id" element={<DetailPage />} />
       </Routes>
