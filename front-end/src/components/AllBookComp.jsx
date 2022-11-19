@@ -68,6 +68,45 @@ export default function BookCard() {
                 setSearchProduct(searchName)
             }
         })
+
+        const onAddCart = async (BookId) => {
+          try {
+            if (!NIM) {
+              return Swal.fire({
+              icon: 'error',
+              title: 'Oooops ...',
+              text: 'Login First',
+              timer: 2000,
+              customClass: {
+                  container: 'my-swal'
+              }
+            });
+          }
+      
+              const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
+      
+              Swal.fire({
+                  icon: 'success',
+                  title: 'Good Job',
+                  text: `${result.data.massage}`,
+                  timer: 2000,
+                  customClass: {
+                      container: 'my-swal'
+                  }
+              })
+      
+          } catch (err) {
+            console.log(err)
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: `${err.response.data}`,
+                  customClass: {
+                      container: 'my-swal'
+                  }
+              }) 
+            }
+          };
         
         useEffect(() => {
             getData()
