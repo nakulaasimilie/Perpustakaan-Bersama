@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const bookSlice = createSlice({
-  name: "books",
+export const listSlice = createSlice({
+  name: "cart",
   initialState: {
     value: [],
   },
@@ -13,6 +13,6 @@ export const bookSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { syncData } = bookSlice.actions;
+export const { syncData } = listSlice.actions;
 
-export default bookSlice.reducer;
+export default listSlice.reducer;
