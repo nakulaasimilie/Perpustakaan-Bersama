@@ -155,21 +155,6 @@ export default function BookCard() {
     setLimit(filter);
   }
 
-  const formik = useFormik({
-    initialValues: {
-      searchName: ``,
-    },
-    validationSchema: Yup.object().shape({
-      searchName: Yup.string().min(3, 'Minimal 3 huruf'),
-    }),
-    validateOnChange: false,
-    onSubmit: async () => {
-      const { searchName } = formik.values;
-
-      setSearchProduct(searchName);
-    },
-  });
-
   useEffect(() => {
     getData();
   }, [searchProduct, limit, totalPage, order, order_direction, page]);
