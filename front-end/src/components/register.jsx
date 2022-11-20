@@ -66,6 +66,10 @@ export const Register = () => {
                 text: err.response.data.name
                     ? err.response.data.errors[0].message
                     : err.response.data,
+                timer: 2000,
+                customClass: {
+                    container: 'my-swal'
+                }
             });
         }
     };

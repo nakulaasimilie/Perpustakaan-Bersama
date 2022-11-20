@@ -70,58 +70,57 @@ export default function BookCard() {
         })
 
         const onAddCart = async (BookId) => {
-          try {
-            if (!NIM) {
-              return Swal.fire({
-              icon: 'error',
-              title: 'Oooops ...',
-              text: 'Login First',
-              timer: 2000,
-              customClass: {
-                  container: 'my-swal'
+            try {
+                if (!NIM) {
+                return Swal.fire({
+                icon: 'error',
+                title: 'Oooops ...',
+                text: 'Login First',
+                timer: 2000,
+                customClass: {
+                    container: 'my-swal'
+                    }
+                });
                 }
-              });
-            }
-            if (cart >= 5) {
-              return Swal.fire({
-              icon: 'error',
-              title: 'Oooops ...',
-              text: 'Keranjang Penuh',
-              timer: 2000,
-              customClass: {
-                  container: 'my-swal'
+                if (cart >= 5) {
+                    return Swal.fire({
+                    icon: 'error',
+                    title: 'Oooops ...',
+                    text: 'Keranjang Penuh',
+                    timer: 2000,
+                    customClass: {
+                        container: 'my-swal'
+                        }
+                    });
                 }
-              });
-            }
-      
-              const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
+                const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
 
-              Swal.fire({
-                  icon: 'success',
-                  title: 'Good Job',
-                  text: `${result.data.massage}`,
-                  timer: 2000,
-                  customClass: {
-                      container: 'my-swal'
-                  }
-              })
-      
-          } catch (err) {
-            console.log(err)
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Oops...',
-                  text: `${err.response.data}`,
-                  customClass: {
-                      container: 'my-swal'
-                  }
-              }) 
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Good Job',
+                    text: `${result.data.massage}`,
+                    timer: 2000,
+                    customClass: {
+                        container: 'my-swal'
+                    }
+                })
+        
+            } catch (err) {
+                console.log(err)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `${err.response.data}`,
+                    customClass: {
+                        container: 'my-swal'
+                    }
+                }) 
             }
-          };
+        };
         
         useEffect(() => {
             getData()
-        }, [searchProduct, limit, totalPage, order, order_direction, page])
+        }, [searchProduct, limit, totalPage, order, order_direction, page, cart])
 
         useEffect(() => {
             fetchProduct()
@@ -233,8 +232,8 @@ export default function BookCard() {
                 </Box>
                 </Box>
                 <Box pb='12px' px='10px' h='40px'>
-                  {item.Carts.find((item2) => item2["UserNIM"] === NIM) ?
-                  <Button
+                {item.Carts.find((item2) => item2["UserNIM"] === NIM) ?
+                <Button
                     disabled
                     w='full'
                     borderRadius='9px'

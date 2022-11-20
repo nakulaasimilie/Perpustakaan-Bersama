@@ -10,17 +10,24 @@ import Swal from 'sweetalert2'
 
 export default function CartDetail() {
     const { NIM, email ,isVerified, cart } = useSelector((state) => state.userSlice.value)
-    const data = useSelector((state) => state.cartSlice.value);
-    const loan = useSelector((state) => state.loanSlice.value);
-    console.log(loan)
-
+    const data = useSelector((state) => state.loanSlice.value);
+    
 
 return (
     <Box>
-
-        {loan.map(i => {
-            return (
+        {data?.length === 0 ?
+            <Box align='center'>
+            <Image src='https://www.kibrispdr.org/data/1779/gif-pendidikan-4.gif' objectFit='contain' w='400px' h='300px' />
+            <Text textAlign='center' fontWeight='bold'>Tidak Ada Transaksi Yang Aktif</Text>
+            <Text as={Link} to="/" textAlign='center' fontWeight='bold' color="pink.400" w='150px' _hover={{ cursor: 'pointer', textDecoration: 'underline' }}>
+            Pinjam Sekarang
+            </Text>
+        </Box> 
+        :
     <Box display='flex' justifyContent='center' flexWrap={'wrap'}>
+        {data?.map(i => {
+            return (
+                <>
         <Box h='480px' p='25px' minW='370px' w={'22vw'} mx='15px' mt='10px' mb='20px' justifyContent={'center'} boxShadow='md' borderWidth='1px' borderRadius="10px">
             <Text fontWeight='bold' fontSize='lg'>
                 Detail Loan
@@ -48,7 +55,7 @@ return (
                 <Text fontWeight='semibold'>
                 Status :
                 </Text>
-                <Badge borderRadius="xl" alignSelf="center" color={i.transaction_status === 'Pengajuan' ? 'yellow.400' : i.transaction_status === 'Peminjaman' ? 'green.400' : 'red.400'}>
+                <Badge borderRadius="xl" alignSelf="center" color={i.transaction_status === 'Pengajuan' ? 'yellow.500' : i.transaction_status === 'Peminjaman' ? 'green.400' : 'red.400'}>
                     <Text fontWeight='semibold'>
                     {i.transaction_status}
                     </Text>
@@ -110,13 +117,6 @@ return (
                             </Link>
                         </Box>
                         </Box>
-                        {/* <Tooltip label='Hapus Produk' fontSize='sm' >
-                        <Button variant='link' color="pink.400" size='sm'
-                            // onClick={onOpenDelete} 
-                            _hover={{ color: "pink" }}>
-                            <Icon boxSize={4} as={FaTrashAlt} />
-                        </Button>
-                        </Tooltip> */}
                     </Flex>
                         <Divider my='20px' />
                 </>
@@ -124,10 +124,11 @@ return (
                 })}
                 </Box>
         </Box>
-
-    </Box>
-    )
+        </>
+)
 })}
+    </Box>
+    }
     </Box>
 )
 }

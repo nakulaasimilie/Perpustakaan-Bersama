@@ -28,8 +28,8 @@ export const userSlice = createSlice({
       state.value.username = "";
       state.value.email = "";
       state.value.isVerified = "";
-      state.value.cart = "";
-      state.value.loan = "";
+      state.value.cart = 0;
+      state.value.loan = 0;
     },
   },
 });

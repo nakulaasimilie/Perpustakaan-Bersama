@@ -7,6 +7,7 @@
     import {Link, useNavigate} from "react-router-dom"
     import Axios from "axios";
     import Swal from 'sweetalert2'
+    import { FaTrashAlt } from 'react-icons/fa';
 
     export default function CartDetail() {
         const { NIM, email ,isVerified, cart, loan } = useSelector((state) => state.userSlice.value)
@@ -42,6 +43,25 @@
                         ? err.response.data.errors[0].message
                         : err.response.data,
                 });
+            }
+        }
+
+        const onDeleteCart = async (id) => {
+            try {
+                await Axios.delete(`http://localhost:2000/cart/${id}`);
+            
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Good Job',
+                    text: "Cart Berhasil Dihapus",
+                    timer: 2000,
+                    customClass: {
+                        container: 'my-swal'
+                    }
+                })
+            
+                } catch (err) {
+                console.log(err)
             }
         }
 
@@ -116,6 +136,7 @@
             <Box minW='370px' w={'55vw'} mx='15px' my='10px' p='25px' px='20px' justifyContent={'center'} boxShadow='md' borderWidth='1px' borderRadius="10px">
             {
                 data.length === 0 ?
+                <>
                 <Box align='center'>
                     <Image src='https://www.kibrispdr.org/data/1779/gif-pendidikan-4.gif' objectFit='contain' w='400px' h='300px' />
                     <Text textAlign='center' fontWeight='bold'>Keranjang anda kosong</Text>
@@ -123,6 +144,7 @@
                     Pinjam Sekarang
                     </Text>
                 </Box>
+                </>
                 :
                 // {data.map(item => {
                 //     return (
@@ -151,13 +173,13 @@
                                 </Link>
                             </Box>
                             </Box>
-                            {/* <Tooltip label='Hapus Produk' fontSize='sm' >
+                            <Tooltip label='Hapus Dari Keranjang' fontSize='sm' >
                             <Button variant='link' color="pink.400" size='sm'
-                                // onClick={onOpenDelete} 
+                                onClick={() => onDeleteCart(item.id)} 
                                 _hover={{ color: "pink" }}>
                                 <Icon boxSize={4} as={FaTrashAlt} />
                             </Button>
-                            </Tooltip> */}
+                            </Tooltip>
                         </Flex>
                             <Divider my='20px' />
                     </>
