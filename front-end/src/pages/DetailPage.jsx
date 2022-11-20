@@ -49,40 +49,28 @@ export default function DetailPage() {
         spacing={{ base: 8, md: 10 }}
         py={{ base: 18, md: 24 }}>
         <Flex>
-          <Box
-            w='380px'
-            h='493px'
-            borderWidth='1px'
-            m='10px'
-            boxShadow='base'
-            borderRadius='13px'>
-            <Box h='155px' w='full' borderTopRadius='13px'>
-              <Image
-                rounded={'md'}
-                alt={data?.Title}
-                src={data?.Images}
-                fit={'cover'}
-                align={'center'}
-                w={'100%'}
-                h={{ base: '100%', sm: '400px', lg: '500px' }}
-              />
-            </Box>
-          </Box>
+          <Image
+            rounded={'md'}
+            alt={data?.Title}
+            src={data?.Images}
+            fit={'cover'}
+            align={'center'}
+            w={'100%'}
+            h={{ base: '100%', sm: '400px', lg: '500px' }}
+          />
         </Flex>
         <Stack spacing={{ base: 6, md: 10 }}>
           <Box as={'header'}>
             <Heading
               lineHeight={1.1}
               fontWeight={600}
-              fontSize={{ base: '2xl', sm: '4xl', lg: '5xl' }}
-              textColor='#FF6B6B'>
+              fontSize={{ base: '2xl', sm: '4xl', lg: '5xl' }}>
               {data?.Title}
             </Heading>
             <Text
               color={useColorModeValue('gray.900', 'gray.400')}
-              mt={10}
               fontWeight={300}
-              fontSize={'4xl'}>
+              fontSize={'2xl'}>
               {data?.Genre}
             </Text>
           </Box>
@@ -95,11 +83,11 @@ export default function DetailPage() {
                 borderColor={useColorModeValue('gray.200', 'gray.600')}
               />
             }>
-            <VStack spacing={{ base: 4, sm: 1 }}>
+            <VStack spacing={{ base: 4, sm: 6 }}>
               <Text
                 color={useColorModeValue('gray.500', 'gray.400')}
                 fontSize={'2xl'}
-                fontWeight={'bold'}
+                fontWeight={'300'}
                 textAlign={'left'}>
                 Abstract
               </Text>
@@ -107,8 +95,8 @@ export default function DetailPage() {
             </VStack>
             <Box>
               <Text
-                fontSize={{ base: '10px', lg: '25px' }}
-                textColor='#FF6B6B'
+                fontSize={{ base: '16px', lg: '18px' }}
+                color={useColorModeValue('yellow.500', 'yellow.300')}
                 fontWeight={'500'}
                 textTransform={'uppercase'}
                 mb={'4'}>
@@ -117,16 +105,14 @@ export default function DetailPage() {
 
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
                 <List spacing={2}>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    <ListItem>{data?.Author}</ListItem>
-                  </Text>
+                  <ListItem>{data?.Author}</ListItem>
                 </List>
               </SimpleGrid>
             </Box>
             <Box>
               <Text
-                fontSize={{ base: '10px', lg: '25px' }}
-                textColor='#FF6B6B'
+                fontSize={{ base: '16px', lg: '18px' }}
+                color={useColorModeValue('yellow.500', 'yellow.300')}
                 fontWeight={'500'}
                 textTransform={'uppercase'}
                 mb={'4'}>
@@ -144,12 +130,12 @@ export default function DetailPage() {
           </Stack>
 
           <Button
-            rounded={'30px'}
+            rounded={'none'}
             w={'full'}
             mt={8}
             size={'lg'}
             py={'7'}
-            bg={'#FF6B6B'}
+            bg={useColorModeValue('gray.900', 'gray.50')}
             color={useColorModeValue('white', 'gray.900')}
             textTransform={'uppercase'}
             _hover={{
