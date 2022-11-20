@@ -1,18 +1,23 @@
 import HomePage from './pages/HomePage';
 import { Route, Routes } from 'react-router-dom';
 import Axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import './index.css';
 import { login } from './redux/userSlice';
 import NavbarComp from './components/NavbarComp';
+import './App.css';
+import { AdminPage } from './pages/AdminPage';
 import { VerificationPage } from './pages/verificationPage';
 import DetailPage from './pages/DetailPage';
-import './App.css';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { syncData } from './redux/cartSlice';
+import CartPage from './pages/CartPage';
 
 function App() {
   const dispatch = useDispatch();
   const token = localStorage.getItem('token');
+  const { NIM } = useSelector((state) => state.userSlice.value);
 
   const keepLogin = async () => {
     try {
@@ -22,11 +27,35 @@ function App() {
         },
       });
 
+      const result = await Axios.get(
+        `http://localhost:2000/cart/${res.data.NIM}`
+      );
+      dispatch(syncData(result.data));
+
       dispatch(
         login({
           NIM: res.data.NIM,
           username: res.data.username,
           email: res.data.email,
+          isVerified: res.data.isVerified,
+          cart: result.data.length,
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const keepLoginAdmin = async () => {
+    try {
+      const res = await Axios.get(`http://localhost:2000/admin/keepLogin`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(
+        login({
+          username: res.data.username,
           isVerified: res.data.isVerified,
         })
       );
@@ -36,7 +65,7 @@ function App() {
   };
 
   useEffect(() => {
-    keepLogin();
+    NIM === 0 ? keepLogin() : keepLoginAdmin();
   });
 
   return (
@@ -51,6 +80,9 @@ function App() {
             </>
           }
         />
+        <Route path='/admin' element={<AdminPage />} />
+        <Route path='/dashboard' element={<AdminDashboard />} />
+        <Route path='/cart' element={<CartPage />} />
         <Route path='/verification/:token' element={<VerificationPage />} />
         <Route path='/detail/:id' element={<DetailPage />} />
       </Routes>

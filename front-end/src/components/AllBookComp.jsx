@@ -29,16 +29,20 @@ import { BiSearchAlt, BiReset } from 'react-icons/bi';
 import { BsFilterLeft } from 'react-icons/bs';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function BookCard() {
+  const { NIM, isVerified, cart } = useSelector(
+    (state) => state.userSlice.value
+  );
   const [limit, setLimit] = useState(5);
   const [searchProduct, setSearchProduct] = useState('');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState('Title');
   const [order_direction, setOrder_direction] = useState('ASC');
+  const [idbook, setIdbook] = useState('');
 
   const dispatch = useDispatch();
   const data = useSelector((state) => state.bookSlice.value);
@@ -52,14 +56,94 @@ export default function BookCard() {
   const getData = async () => {
     try {
       const res = await Axios.get(url);
+
       dispatch(syncData(res.data.result));
-      console.log(res.data.totalPage);
-      console.log(res.data);
       setTotalPage(Math.ceil(res.data.totalRows / res.data.limit));
     } catch (err) {
       console.log(err);
     }
   };
+
+  async function fetchProduct(filter) {
+    setOrder_direction(filter);
+  }
+  async function fetchCategory(filter) {
+    setOrder(filter);
+  }
+  async function fetchLimit(filter) {
+    setLimit(filter);
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      searchName: ``,
+    },
+    validationSchema: Yup.object().shape({
+      searchName: Yup.string().min(3, 'Minimal 3 huruf'),
+    }),
+    validateOnChange: false,
+    onSubmit: async () => {
+      const { searchName } = formik.values;
+
+      setSearchProduct(searchName);
+    },
+  });
+
+  const onAddCart = async (BookId) => {
+    try {
+      if (!NIM) {
+        return Swal.fire({
+          icon: 'error',
+          title: 'Oooops ...',
+          text: 'Login First',
+          timer: 2000,
+          customClass: {
+            container: 'my-swal',
+          },
+        });
+      }
+      if (cart >= 5) {
+        return Swal.fire({
+          icon: 'error',
+          title: 'Oooops ...',
+          text: 'Keranjang Penuh',
+          timer: 2000,
+          customClass: {
+            container: 'my-swal',
+          },
+        });
+      }
+
+      const result = await Axios.post('http://localhost:2000/cart/add', {
+        UserNIM: NIM,
+        BookId,
+      });
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Good Job',
+        text: `${result.data.massage}`,
+        timer: 2000,
+        customClass: {
+          container: 'my-swal',
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `${err.response.data}`,
+        customClass: {
+          container: 'my-swal',
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, [searchProduct, limit, totalPage, order, order_direction, page]);
 
   async function fetchProduct(filter) {
     setOrder_direction(filter);
@@ -263,17 +347,30 @@ export default function BookCard() {
                   </Box>
                 </Box>
                 <Box pb='12px' px='10px' h='40px'>
-                  <Button
-                    w='full'
-                    borderColor='pink.400'
-                    borderRadius='9px'
-                    borderWidth='2px'
-                    size='sm'
-                    my='5px'
-                    _hover={{ bg: 'pink', color: 'white' }}>
-                    <Icon boxSize='4' as={IoCartOutline} mr='5px' />
-                    Keranjang
-                  </Button>
+                  {item.Carts.find((item2) => item2['UserNIM'] === NIM) ? (
+                    <Button
+                      disabled
+                      w='full'
+                      borderRadius='9px'
+                      size='sm'
+                      my='5px'>
+                      <Icon boxSize='4' as={IoCartOutline} mr='5px' x />
+                      Keranjang
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => onAddCart(item.id)}
+                      w='full'
+                      borderColor='pink.400'
+                      borderRadius='9px'
+                      borderWidth='2px'
+                      size='sm'
+                      my='5px'
+                      _hover={{ bg: 'pink', color: 'white' }}>
+                      <Icon boxSize='4' as={IoCartOutline} mr='5px' x />
+                      Keranjang
+                    </Button>
+                  )}
                 </Box>
               </Box>
             );
