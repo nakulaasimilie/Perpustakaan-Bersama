@@ -11,8 +11,8 @@ import { AdminPage } from "./pages/AdminPage";
 import { VerificationPage } from "./pages/verificationPage";
 import DetailPage from "./pages/DetailPage";
 import { AdminDashboard } from "./pages/AdminDashboard";
-import { syncData } from "./redux/cartSlice";
-import { loanData } from "./redux/loanSlice";
+import { cartSync } from "./redux/cartSlice";
+import { loanSync } from "./redux/loanSlice";
 import CartPage from "./pages/CartPage";
 import LoanPage from "./pages/LoanPage";
 
@@ -30,10 +30,10 @@ function App() {
       });
 
       const result = await Axios.get(`http://localhost:2000/cart/${res.data.NIM}`);
-      dispatch(syncData(result.data))
+      dispatch(cartSync(result.data))
 
       const loan = await Axios.get(`http://localhost:2000/loan/${res.data.NIM}`);
-      dispatch(loanData(loan.data))
+      dispatch(loanSync(loan.data))
 
       dispatch(
         login({

@@ -3,16 +3,20 @@
         InputRightElement, Input, Tooltip, useToast, Image,
         Modal, ModalOverlay, ModalHeader, ModalBody, ModalCloseButton, ModalContent, Divider
     } from '@chakra-ui/react';
-    import { useSelector } from 'react-redux';
+    import { useDispatch, useSelector } from 'react-redux';
     import {Link, useNavigate} from "react-router-dom"
     import Axios from "axios";
     import Swal from 'sweetalert2'
     import { FaTrashAlt } from 'react-icons/fa';
+    import { addLoan, CartLoan, delCart } from '../redux/userSlice';
+    import { cartDel, cartSync } from '../redux/cartSlice';
+    import { loanSync } from '../redux/loanSlice';
 
     export default function CartDetail() {
         const { NIM, email ,isVerified, cart, loan } = useSelector((state) => state.userSlice.value)
         const data = useSelector((state) => state.cartSlice.value);
         const navigate = useNavigate()
+        const dispatch = useDispatch()
 
         const url = "http://localhost:2000/loan"
 
@@ -31,6 +35,12 @@
                         container: 'my-swal'
                     }
                 })
+
+                const result = await Axios.get(`http://localhost:2000/loan/${NIM}`);
+                dispatch(loanSync(result.data))
+                dispatch(cartDel())
+                dispatch(CartLoan())
+                dispatch(addLoan())
 
                 setTimeout(() => navigate(`/loan`), 2000);
 
@@ -59,6 +69,9 @@
                         container: 'my-swal'
                     }
                 })
+                const result = await Axios.get(`http://localhost:2000/cart/${NIM}`);
+                dispatch(cartSync(result.data))
+                dispatch(delCart())
             
                 } catch (err) {
                 console.log(err)

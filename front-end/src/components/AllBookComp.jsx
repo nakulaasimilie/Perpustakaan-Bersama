@@ -7,12 +7,14 @@ import Axios from "axios";
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { syncData } from '../redux/bookSlice';
+import { cartSync } from "../redux/cartSlice";
 import { BiSearchAlt, BiReset } from 'react-icons/bi';
 import { BsFilterLeft } from 'react-icons/bs';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2'
+import { addCart } from '../redux/userSlice';
 
 
 export default function BookCard() {
@@ -27,6 +29,7 @@ export default function BookCard() {
 
     const dispatch = useDispatch();
     const data = useSelector((state) => state.bookSlice.value);
+    const [state, setState] = useState("")
 
     const url = `http://localhost:2000/book/view2?search_query=${searchProduct}&page=${page - 1}&limit=${limit}&order=${order ? order :`id`}&order_direction=${order_direction ? order_direction : 'ASC'}`
 
@@ -64,7 +67,6 @@ export default function BookCard() {
             validateOnChange: false,
             onSubmit: async () => {
                 const { searchName } = formik.values;
-                
                 setSearchProduct(searchName)
             }
         })
@@ -94,6 +96,11 @@ export default function BookCard() {
                     });
                 }
                 const result = await Axios.post("http://localhost:2000/cart/add", {UserNIM: NIM, BookId});
+                setState(result.data)
+                const res = await Axios.get(`http://localhost:2000/cart/${NIM}`);
+                dispatch(cartSync(res.data))
+                dispatch(addCart())
+
 
                 Swal.fire({
                     icon: 'success',
@@ -120,7 +127,7 @@ export default function BookCard() {
         
         useEffect(() => {
             getData()
-        }, [searchProduct, limit, totalPage, order, order_direction, page, cart])
+        }, [searchProduct, limit, totalPage, order, order_direction, page, state])
 
         useEffect(() => {
             fetchProduct()
@@ -243,7 +250,7 @@ export default function BookCard() {
                     Keranjang
                 </Button>
                 :
-                  <Button
+                <Button
                     onClick={() => onAddCart(item.id)}
                     w='full'
                     borderColor='pink.400'
@@ -255,7 +262,6 @@ export default function BookCard() {
                     <Icon boxSize='4' as={IoCartOutline} mr='5px'x />
                     Keranjang
                 </Button>
-                  
                 }
                 </Box>
             </Box>

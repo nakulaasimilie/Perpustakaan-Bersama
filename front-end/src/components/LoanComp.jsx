@@ -1,17 +1,38 @@
-import {
-    Flex, Box, Text, Button, InputGroup, InputLeftElement, Icon, useDisclosure,
-    InputRightElement, Input, Tooltip, useToast, Image,
-    Modal, ModalOverlay, ModalHeader, ModalBody, ModalCloseButton, ModalContent, Divider, Badge
-} from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
+import {Flex, Box, Text, Button, Image, Divider, Badge} from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
 import {Link} from "react-router-dom"
 import Axios from "axios";
 import Swal from 'sweetalert2'
+import { loanSync } from '../redux/loanSlice';
+import { delLoan } from '../redux/userSlice';
 
 export default function CartDetail() {
     const { NIM, email ,isVerified, cart } = useSelector((state) => state.userSlice.value)
     const data = useSelector((state) => state.loanSlice.value);
+    const dispatch = useDispatch()
     
+    const onCancel = async (inv) => {
+        try {
+            await Axios.patch(`http://localhost:2000/loan/${inv}`);
+        
+            Swal.fire({
+                icon: 'success',
+                title: 'Good Job',
+                text: "Loan Berhasil Dibatalkan",
+                timer: 2000,
+                customClass: {
+                    container: 'my-swal'
+                }
+            })
+
+            const loan = await Axios.get(`http://localhost:2000/loan/${NIM}`);
+            dispatch(loanSync(loan.data))
+            dispatch(delLoan())
+        
+            } catch (err) {
+            console.log(err)
+        }
+    }
 
 return (
     <Box>
@@ -122,6 +143,19 @@ return (
                 </>
                     )
                 })}
+                {i.transaction_status === "Pengajuan" ?
+                <Button
+                    onClick={() => onCancel(i.no_invoice)}
+                    justifyContent="space-between"
+                    borderColor='pink.400'
+                    borderRadius='9px'
+                    borderWidth='2px'
+                    size='sm'
+                    my='5px'
+                    _hover={{ bg: 'pink', color: 'white' }}>
+                    Cancel
+                </Button>
+                : null }
                 </Box>
         </Box>
         </>

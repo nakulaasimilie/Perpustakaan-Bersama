@@ -75,6 +75,25 @@ module.exports = {
         } catch (err) {
             console.log(err);
             res.status(400).send(err);
-            }
-        },
+        }
+    },
+    cancelLoan: async (req, res) => {
+        try {
+            await loan.update(
+                { transaction_status: "Batal" },
+                {
+                    where: {
+                        no_invoice: req.params.inv,
+                    },
+                }
+            );
+            
+            res.status(200).send({
+                massage: "Transaksi Succes"
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(400).send(err);
+        }
+    },
 }

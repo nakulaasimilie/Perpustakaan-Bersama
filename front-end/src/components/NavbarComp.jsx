@@ -33,15 +33,15 @@ import {
   DeleteIcon,
 } from "@chakra-ui/icons";
 import { IoCartOutline } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
-import { logout, login } from "../redux/userSlice";
-import { syncData, delData } from "../redux/cartSlice";
+import { useDispatch, useSelector, connect } from "react-redux";
+import { logout, login, delCart } from "../redux/userSlice";
+import { cartSync, cartDel } from "../redux/cartSlice";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom'
-import { delLoan, loanData } from "../redux/loanSlice";
+import { loanDel, loanSync } from "../redux/loanSlice";
 
 const url = "http://localhost:2000/user/login";
 
@@ -61,8 +61,8 @@ export default function NavbarComp() {
 
   const onLogout = () => {
     dispatch(logout());
-    dispatch(delData())
-    dispatch(delLoan())
+    dispatch(cartDel())
+    dispatch(loanDel())
     localStorage.removeItem("token");
   };
 
@@ -76,10 +76,10 @@ export default function NavbarComp() {
       const result = await Axios.post(url, user);
 
       const res = await Axios.get(`http://localhost:2000/cart/${result.data.isUserExist.NIM}`);
-      dispatch(syncData(res.data))
+      dispatch(cartSync(res.data))
 
       const loan = await Axios.get(`http://localhost:2000/loan/${result.data.isUserExist.NIM}`);
-      dispatch(loanData(loan.data))
+      dispatch(loanSync(loan.data))
 
       dispatch(
         login({
@@ -146,6 +146,10 @@ export default function NavbarComp() {
               container: 'my-swal'
           }
       })
+      const result = await Axios.get(`http://localhost:2000/cart/${NIM}`);
+      dispatch(cartSync(result.data))
+      dispatch(delCart())
+      
 
     } catch (err) {
       console.log(err)
@@ -430,8 +434,8 @@ const MobileNav = () => {
 
   const onLogout = () => {
     dispatch(logout());
-    dispatch(delData())
-    dispatch(delLoan())
+    dispatch(cartDel())
+    dispatch(loanDel())
     localStorage.removeItem("token");
   };
 
@@ -445,10 +449,10 @@ const MobileNav = () => {
       const result = await Axios.post(url, user);
 
       const res = await Axios.get(`http://localhost:2000/cart/${result.data.isUserExist.NIM}`);
-      dispatch(syncData(res.data))
+      dispatch(cartSync(res.data))
 
       const loan = await Axios.get(`http://localhost:2000/loan/${result.data.isUserExist.NIM}`);
-      dispatch(loanData(loan.data))
+      dispatch(loanSync(loan.data))
 
       dispatch(
         login({
