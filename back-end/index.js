@@ -24,6 +24,6 @@ server.use('/cart', cartRoutes);
 server.use('/admin', adminRoutes);
 
 server.listen(PORT, () => {
-  //   db.sequelize.sync({ alter: true });
+  // db.sequelize.sync({ alter: true });
   console.log('Success Running at PORT: ' + PORT);
 });
