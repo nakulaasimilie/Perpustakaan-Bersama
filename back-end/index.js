@@ -2,11 +2,10 @@ const express = require("express");
 const PORT = 2000;
 const server = express();
 const db = require("./models");
-const cors = require("cors")
+const cors = require("cors");
 const bearerToken = require("express-bearer-token");
 
-
-require("dotenv").config()
+require("dotenv").config();
 
 server.use(express.json());
 server.use(cors());
@@ -21,6 +20,6 @@ server.use("/admin", adminRoutes);
 server.use("/loan", loanRoutes);
 
 server.listen(PORT, () => {
-    // db.sequelize.sync({ alter: true });
-    console.log("Success Running at PORT: " + PORT);
+  // db.sequelize.sync({ alter: true });
+  console.log("Success Running at PORT: " + PORT);
 });

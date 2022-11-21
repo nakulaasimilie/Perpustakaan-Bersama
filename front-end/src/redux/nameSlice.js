@@ -10,7 +10,7 @@ export const nameSlice = createSlice({
   initialState,
   reducers: {
     syncName: (state, action) => {
-      state.value = action.payload
+      state.value = action.payload;
     },
   },
 });

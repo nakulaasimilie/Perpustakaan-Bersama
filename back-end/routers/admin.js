@@ -3,6 +3,6 @@ const { admin } = require("../controllers/index");
 
 router.post("/register", admin.register);
 router.post("/login", admin.login);
-router.get("/keepLogin", admin.login);
+router.get("/keepLogin", admin.keepLogin);
 
 module.exports = router;

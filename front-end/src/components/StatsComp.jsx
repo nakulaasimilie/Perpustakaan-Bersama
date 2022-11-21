@@ -91,23 +91,23 @@ export default function StatsComp() {
         fontWeight={"bold"}
       ></chakra.h1>
 
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
-            <StatsCard
-              title={"Users"}
-              stat={data.length}
-              icon={<BsPerson size={"3em"} />}
-            />
-            <StatsCard
-              title={"Books"}
-              stat={data1.length}
-              icon={<FiServer size={"3em"} />}
-            />
-            <StatsCard
-              title={"Transactions"}
-              stat={"Coming Soon"}
-              icon={<GoLocation size={"3em"} />}
-            />
-          </SimpleGrid>
+      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
+        <StatsCard
+          title={"Users"}
+          stat={data.length}
+          icon={<BsPerson size={"3em"} />}
+        />
+        <StatsCard
+          title={"Books"}
+          stat={data1.length}
+          icon={<FiServer size={"3em"} />}
+        />
+        <StatsCard
+          title={"Transactions"}
+          stat={"Coming Soon"}
+          icon={<GoLocation size={"3em"} />}
+        />
+      </SimpleGrid>
     </Box>
   );
 }

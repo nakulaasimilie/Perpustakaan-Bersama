@@ -8,30 +8,30 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-        // define association here
-        Profile.belongsTo(models.User)
+      // define association here
+      Profile.belongsTo(models.User);
     }
+  }
+  Profile.init(
+    {
+      address: {
+        type: DataTypes.STRING,
+      },
+      birthday_date: {
+        type: DataTypes.STRING,
+      },
+      gender: {
+        type: DataTypes.STRING,
+      },
+      profilePic: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+    },
+    {
+      sequelize,
+      modelName: "Profile",
     }
-    Profile.init(
-        {
-            address: {
-                type: DataTypes.STRING,
-            },
-            birthday_date: {
-                type: DataTypes.STRING,
-            },
-            gender: {
-                type: DataTypes.STRING,
-            },
-            profilePic: {
-                type: DataTypes.STRING,
-                defaultValue: "",
-            }
-        },
-        {
-        sequelize,
-        modelName: "Profile",
-        }
-    );
-    return Profile;
+  );
+  return Profile;
 };

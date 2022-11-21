@@ -57,7 +57,6 @@ module.exports = {
 
       const payload = { NIM: isUserExist.NIM };
       const token = jwt.sign(payload, "jcwd2204");
-      // console.log(token)
 
       const isValid = await bcrypt.compare(password, isUserExist.password);
 
@@ -76,7 +75,7 @@ module.exports = {
   keepLogin: async (req, res) => {
     try {
       const verify = jwt.verify(req.token, "jcwd2204");
-      // console.log(verify);
+
       const result = await user.findOne({
         where: {
           NIM: verify.NIM,
@@ -92,7 +91,6 @@ module.exports = {
       });
 
       result.profilePic = isProflieExist.profilePic;
-      // console.log(result)
 
       res.status(200).send(result);
     } catch (err) {

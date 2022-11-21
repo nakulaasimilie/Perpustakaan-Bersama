@@ -8,22 +8,22 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-        // define association here
-        Cart.belongsTo(models.User);
-        Cart.belongsTo(models.Book);
+      // define association here
+      Cart.belongsTo(models.User);
+      Cart.belongsTo(models.Book);
     }
+  }
+  Cart.init(
+    {
+      note: {
+        type: DataTypes.STRING(300),
+        allowNull: true,
+      },
+    },
+    {
+      sequelize,
+      modelName: "Cart",
     }
-    Cart.init(
-        {
-            note: {
-                type: DataTypes.STRING(300),
-                allowNull: true,
-            },
-        },
-        {
-        sequelize,
-        modelName: "Cart",
-        }
-    );
-    return Cart;
+  );
+  return Cart;
 };
