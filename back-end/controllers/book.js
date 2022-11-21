@@ -34,7 +34,7 @@ module.exports = {
           'Publisher',
           'Abstract',
           'Images',
-          'Stock',
+          // 'Stock',
         ],
       });
       res.status(200).send(users);
