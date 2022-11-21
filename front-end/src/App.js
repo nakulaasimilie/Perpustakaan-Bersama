@@ -3,10 +3,8 @@ import { Route, Routes } from 'react-router-dom';
 import Axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import './index.css';
 import { login } from './redux/userSlice';
 import NavbarComp from './components/NavbarComp';
-import './App.css';
 import { AdminPage } from './pages/AdminPage';
 import { VerificationPage } from './pages/verificationPage';
 import DetailPage from './pages/DetailPage';
@@ -15,10 +13,12 @@ import { cartSync } from './redux/cartSlice';
 import { loanSync } from './redux/loanSlice';
 import CartPage from './pages/CartPage';
 import LoanPage from './pages/LoanPage';
+import { loginAdmin } from './redux/adminSlice';
 
 function App() {
   const dispatch = useDispatch();
   const token = localStorage.getItem('token');
+  const tokenAdmin = localStorage.getItem('tokenAdmin');
   const { NIM } = useSelector((state) => state.userSlice.value);
 
   const keepLogin = async () => {
@@ -58,13 +58,12 @@ function App() {
     try {
       const res = await Axios.get(`http://localhost:2000/admin/keepLogin`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${tokenAdmin}`,
         },
       });
       dispatch(
-        login({
+        loginAdmin({
           username: res.data.username,
-          isVerified: res.data.isVerified,
         })
       );
     } catch (err) {
@@ -73,7 +72,11 @@ function App() {
   };
 
   useEffect(() => {
-    NIM === 0 ? keepLogin() : keepLoginAdmin();
+    tokenAdmin
+      ? keepLoginAdmin()
+      : token
+      ? keepLogin()
+      : console.log('Open Library');
   });
 
   return (

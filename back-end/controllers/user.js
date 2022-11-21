@@ -1,21 +1,21 @@
-const db = require("../models");
+const db = require('../models');
 const user = db.User;
 const profile = db.Profile;
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { Op } = require("sequelize");
-const fs = require("fs");
-const handlebars = require("handlebars");
-const transporter = require("../helpers/transporter");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
+const fs = require('fs');
+const handlebars = require('handlebars');
+const transporter = require('../helpers/transporter');
 
 module.exports = {
   register: async (req, res) => {
     try {
       const { NIM, username, email, password, confirmPassword } = req.body;
 
-      if (password != confirmPassword) throw "Wrong Password";
+      if (password != confirmPassword) throw 'Wrong Password';
 
-      if (password.length < 8) throw "Minimum 8 characters";
+      if (password.length < 8) throw 'Minimum 8 characters';
 
       const salt = await bcrypt.genSalt(10);
 
@@ -31,10 +31,10 @@ module.exports = {
         UserNIM: NIM,
       });
 
-      const token = jwt.sign({ NIM: NIM }, "jcwd2204");
+      const token = jwt.sign({ NIM: NIM }, 'jcwd2204');
 
       res.status(200).send({
-        massage: "Register Succes",
+        massage: 'Register Succes',
         data,
         token,
       });
@@ -48,23 +48,22 @@ module.exports = {
 
       const isUserExist = await user.findOne({
         where: {
-          NIM: NIM ? NIM : "",
+          NIM: NIM ? NIM : '',
         },
         raw: true,
       });
 
-      if (!isUserExist) throw "User not found";
+      if (!isUserExist) throw 'User not found';
 
       const payload = { NIM: isUserExist.NIM };
-      const token = jwt.sign(payload, "jcwd2204");
-      // console.log(token)
+      const token = jwt.sign(payload, 'jcwd2204');
 
       const isValid = await bcrypt.compare(password, isUserExist.password);
 
       if (!isValid) throw `Wrong password`;
 
       res.status(200).send({
-        message: "Login Succes",
+        message: 'Login Succes',
         isUserExist,
         token,
       });
@@ -75,8 +74,8 @@ module.exports = {
   },
   keepLogin: async (req, res) => {
     try {
-      const verify = jwt.verify(req.token, "jcwd2204");
-      // console.log(verify);
+      const verify = jwt.verify(req.token, 'jcwd2204');
+
       const result = await user.findOne({
         where: {
           NIM: verify.NIM,
@@ -92,7 +91,6 @@ module.exports = {
       });
 
       result.profilePic = isProflieExist.profilePic;
-      // console.log(result)
 
       res.status(200).send(result);
     } catch (err) {
@@ -132,7 +130,7 @@ module.exports = {
         }
       );
       res.status(200).send({
-        message: "Succes Verification",
+        message: 'Succes Verification',
         data: isAccountExist,
       });
     } catch (err) {
@@ -163,9 +161,9 @@ module.exports = {
         raw: true,
       });
 
-      const token = jwt.sign({ NIM }, "jcwd2204", { expiresIn: "1h" });
+      const token = jwt.sign({ NIM }, 'jcwd2204', { expiresIn: '1h' });
 
-      const tempEmail = fs.readFileSync("./template/codeotp.html", "utf-8");
+      const tempEmail = fs.readFileSync('./template/codeotp.html', 'utf-8');
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         username: isAccountExist.username,
@@ -173,14 +171,14 @@ module.exports = {
       });
 
       await transporter.sendMail({
-        from: "Admin",
+        from: 'Admin',
         to: isAccountExist.email,
-        subject: "Verifikasi akun",
+        subject: 'Verifikasi akun',
         html: tempResult,
       });
 
       res.status(200).send({
-        massage: "Check Your Email, code otp send succes",
+        massage: 'Check Your Email, code otp send succes',
         data,
         token,
       });

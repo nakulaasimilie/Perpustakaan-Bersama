@@ -2,8 +2,6 @@ const { Op } = require('sequelize');
 const { sequelize } = require('../models');
 const db = require('../models');
 const book = db.Book;
-const user = db.User;
-const cart = db.Cart;
 
 module.exports = {
   create: async (req, res) => {
@@ -29,12 +27,14 @@ module.exports = {
     try {
       const users = await book.findAll({
         attributes: [
+          'id',
           'Title',
           'Author',
           'Genre',
           'Publisher',
           'Abstract',
           'Images',
+          'Stock',
         ],
       });
       res.status(200).send(users);
@@ -70,12 +70,6 @@ module.exports = {
             Publisher: Publisher ? Publisher : '',
           },
         },
-        include: [
-          {
-            model: cart,
-            attributes: ['id', 'UserNIM'],
-          },
-        ],
         raw: true,
       });
       res.status(200).send(users);
@@ -120,13 +114,15 @@ module.exports = {
     }
   },
 
-  delete: async (req, res) => {
+  remove: async (req, res) => {
     try {
       await book.destroy({
         where: {
           id: req.params.id,
         },
+        force: true,
       });
+      console.log(req.params.id);
       const users = await book.findAll();
       res.status(200).send(users);
     } catch (err) {
@@ -137,26 +133,30 @@ module.exports = {
 
   update: async (req, res) => {
     try {
+      const { Title, Author, Genre, Publisher, Abstract, Images, Stock } =
+        req.body;
       await book.update(
         {
-          Title: req.body.Title,
-          Author: req.body.Author,
-          Genre: req.body.Genre,
-          Publisher: req.body.Publisher,
-          Abstract: req.body.Abstract,
-          Images: req.body.Images,
+          Title,
+          Author,
+          Genre,
+          Publisher,
+          Abstract,
+          Images,
+          Stock,
         },
         {
-          where: { id: req.body.id },
+          where: { id: req.params.id },
         }
       );
-      const users = await book.findAll({ where: { id: req.body.id } });
+      const users = await book.findAll({ where: { id: req.params.id } });
       res.status(200).send(users);
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   },
+
   sortBy: async (req, res) => {
     try {
       const { data, order } = req.query;
@@ -233,12 +233,6 @@ module.exports = {
       });
       const totalPage = Math.ceil(totalRows / limit);
       const result = await book.findAll({
-        include: [
-          {
-            model: cart,
-            attributes: ['id', 'UserNIM'],
-          },
-        ],
         where: {
           [Op.or]: [
             {
@@ -261,15 +255,9 @@ module.exports = {
         offset: offset,
         limit: list_limit,
         order: [[orderby, direction]],
-        include: [
-          {
-            model: cart,
-            attributes: ['id', 'UserNIM'],
-          },
-        ],
       });
 
-      res.status(200).send({
+      res.status(200).json({
         result: result,
         page: booklist_page,
         limit: list_limit,
@@ -278,6 +266,14 @@ module.exports = {
       });
     } catch (error) {
       res.status(400).send(error);
+    }
+  },
+
+  stock: async (req, res) => {
+    try {
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
     }
   },
 };
