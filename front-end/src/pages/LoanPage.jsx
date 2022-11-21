@@ -1,10 +1,10 @@
 import React from "react";
-import CartDetail from "../components/CartDetailComp";
 import Footer from "../components/footerComp";
-export default function CartPage() {
+import LoanDetail from "../components/LoanComp";
+export default function LoanPage() {
     return (
         <>
-            <CartDetail />
+            <LoanDetail />
             <Footer/>
         </>
     );

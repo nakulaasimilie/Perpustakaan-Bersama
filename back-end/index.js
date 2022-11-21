@@ -17,11 +17,13 @@ const {
   userRoutes,
   cartRoutes,
   adminRoutes,
+  loanRoutes,
 } = require('./routers');
 server.use('/book', bookRoutes);
 server.use('/user', userRoutes);
 server.use('/cart', cartRoutes);
 server.use('/admin', adminRoutes);
+server.use('/loan', loanRoutes);
 
 server.listen(PORT, () => {
   // db.sequelize.sync({ alter: true });

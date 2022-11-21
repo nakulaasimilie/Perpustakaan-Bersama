@@ -13,9 +13,9 @@ import { RiWhatsappFill } from 'react-icons/ri';
 export default function Footer() {
   return (
     <>
-      <Flex flexWrap={'wrap'} bg={useColorModeValue('gray.50', 'gray.900')}
-        color={useColorModeValue('gray.700', 'gray.200')} minH={'200px'} justifyContent={'center'} padding={'30px'} pt='20px'>
-        {/* -------------------- Box 1 -------------------- */}
+      <Flex flexWrap={'wrap'} bg={useColorModeValue("white", "gray.800")}
+        color={useColorModeValue("gray.600", "white")} minH={'200px'} justifyContent={'center'} padding={'30px'} pt='20px'>
+
         <Box flexWrap='wrap' width='310px' m='5px' mt='15px'>
           <Image src="https://openlibrary.org/static/images/openlibrary-logo-tighter.svg" width='180px' height='40px' />
           <Box display='flex' mt='5px'>
@@ -41,7 +41,6 @@ export default function Footer() {
           </Box>
         </Box>
 
-        {/* -------------------- Tentang Healthymed -------------------- */}
         <Box flexWrap='wrap' width='310px' m='5px' mt='15px'>
           <Text fontWeight='bold' >Tentang Open Library</Text>
           <Text mt='8px' fontSize='sm' fontWeight='semibold' ><Link>Kebijakan Privasi</Link></Text>
@@ -52,7 +51,6 @@ export default function Footer() {
           <Text mt='8px' fontSize='sm' fontWeight='semibold' ><Link>Karir</Link></Text>
         </Box>
 
-        {/* -------------------- Our Healthymed Sosmed -------------------- */}
         <Box flexWrap='wrap' width='310px' m='5px' mt='15px'>
           <Text fontWeight='bold' >Ikuti Kami</Text>
           <Box display='flex' mt='5px' >
@@ -83,7 +81,6 @@ export default function Footer() {
           </Box>
         </Box>
 
-        {/* -------------------- Healthymed Payment Method -------------------- */}
         <Box flexWrap='wrap' width='310px' m='5px' mt='15px'>
           <Text fontWeight='bold' >Metode Pembayaran</Text>
           <Box mt='10px' display='flex' flexWrap='wrap'>

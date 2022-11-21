@@ -11,8 +11,10 @@ import { AdminPage } from './pages/AdminPage';
 import { VerificationPage } from './pages/verificationPage';
 import DetailPage from './pages/DetailPage';
 import { AdminDashboard } from './pages/AdminDashboard';
-import { syncData } from './redux/cartSlice';
+import { cartSync } from './redux/cartSlice';
+import { loanSync } from './redux/loanSlice';
 import CartPage from './pages/CartPage';
+import LoanPage from './pages/LoanPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -30,7 +32,12 @@ function App() {
       const result = await Axios.get(
         `http://localhost:2000/cart/${res.data.NIM}`
       );
-      dispatch(syncData(result.data));
+      dispatch(cartSync(result.data));
+
+      const loan = await Axios.get(
+        `http://localhost:2000/loan/${res.data.NIM}`
+      );
+      dispatch(loanSync(loan.data));
 
       dispatch(
         login({
@@ -39,6 +46,7 @@ function App() {
           email: res.data.email,
           isVerified: res.data.isVerified,
           cart: result.data.length,
+          loan: loan.data.length,
         })
       );
     } catch (err) {
@@ -82,7 +90,24 @@ function App() {
         />
         <Route path='/admin' element={<AdminPage />} />
         <Route path='/dashboard' element={<AdminDashboard />} />
-        <Route path='/cart' element={<CartPage />} />
+        <Route
+          path='/cart'
+          element={
+            <>
+              <NavbarComp />
+              <CartPage />
+            </>
+          }
+        />
+        <Route
+          path='/loan'
+          element={
+            <>
+              <NavbarComp />
+              <LoanPage />
+            </>
+          }
+        />
         <Route path='/verification/:token' element={<VerificationPage />} />
         <Route path='/detail/:id' element={<DetailPage />} />
       </Routes>

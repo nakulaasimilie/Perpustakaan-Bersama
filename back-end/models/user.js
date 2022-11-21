@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         // define association here
         User.hasOne(models.Profile)
         User.hasMany(models.Cart);
+        User.hasMany(models.Loan);
         }
     }
     User.init(
