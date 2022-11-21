@@ -8,7 +8,6 @@ import {
   Stack,
   Collapse,
   Icon,
-  Link,
   Popover,
   PopoverTrigger,
   PopoverContent, PopoverHeader, PopoverArrow, PopoverCloseButton, PopoverBody, TableContainer, Table, Thead, Tr, Th, Td, Tbody, PopoverFooter, ButtonGroup, Badge,
@@ -34,18 +33,20 @@ import {
   DeleteIcon,
 } from "@chakra-ui/icons";
 import { IoCartOutline } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
-import { logout, login } from "../redux/userSlice";
-import { syncData, delData } from "../redux/cartSlice";
+import { useDispatch, useSelector, connect } from "react-redux";
+import { logout, login, delCart } from "../redux/userSlice";
+import { cartSync, cartDel } from "../redux/cartSlice";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom'
+import { loanDel, loanSync } from "../redux/loanSlice";
 
 const url = "http://localhost:2000/user/login";
 
 export default function NavbarComp() {
-  const { NIM, username, isVerified, profilePic, cart } = useSelector(
+  const { NIM, username, isVerified, profilePic, cart, loan } = useSelector(
     (state) => state.userSlice.value
   );
   const data = useSelector((state) => state.cartSlice.value);
@@ -60,7 +61,8 @@ export default function NavbarComp() {
 
   const onLogout = () => {
     dispatch(logout());
-    dispatch(delData())
+    dispatch(cartDel())
+    dispatch(loanDel())
     localStorage.removeItem("token");
   };
 
@@ -74,7 +76,10 @@ export default function NavbarComp() {
       const result = await Axios.post(url, user);
 
       const res = await Axios.get(`http://localhost:2000/cart/${result.data.isUserExist.NIM}`);
-      dispatch(syncData(res.data))
+      dispatch(cartSync(res.data))
+
+      const loan = await Axios.get(`http://localhost:2000/loan/${result.data.isUserExist.NIM}`);
+      dispatch(loanSync(loan.data))
 
       dispatch(
         login({
@@ -82,7 +87,8 @@ export default function NavbarComp() {
           username: result.data.isUserExist.username,
           email: result.data.isUserExist.email,
           isVerified: result.data.isUserExist.isVerified,
-          cart: res.data.length
+          cart: res.data.length,
+          loan: loan.data.length
         })
       );
 
@@ -140,6 +146,10 @@ export default function NavbarComp() {
               container: 'my-swal'
           }
       })
+      const result = await Axios.get(`http://localhost:2000/cart/${NIM}`);
+      dispatch(cartSync(result.data))
+      dispatch(delCart())
+      
 
     } catch (err) {
       console.log(err)
@@ -160,7 +170,7 @@ export default function NavbarComp() {
         borderColor={useColorModeValue("gray.200", "gray.900")}
         align={"center"}
       >
-        <Flex flex={{ base: 1 }} justify={{ md: "start" }} align="center">
+        <Flex as={Link} to="/" flex={{ base: 1 }} justify={{ md: "start" }} align="center">
           <Image
             src="https://openlibrary.org/static/images/openlibrary-logo-tighter.svg"
             w="32"
@@ -234,7 +244,7 @@ export default function NavbarComp() {
               </PopoverBody>
               <PopoverFooter display='flex' justifyContent='flex-end'>
                   <ButtonGroup size='sm'>
-                  <Button colorScheme='pink' >Selengkapnya</Button>
+                  <Button as={Link} to="/cart" colorScheme='pink' >Selengkapnya</Button>
                   </ButtonGroup>
               </PopoverFooter>
           </PopoverContent>
@@ -263,6 +273,14 @@ export default function NavbarComp() {
               </Flex>
             </MenuButton>
             <MenuList alignItems={"center"}>
+              <MenuItem as={Link} to="/loan">Loan 
+                {loan !== 0 ?
+                <Badge ml="2" borderRadius="xl" alignSelf="center" color={"pink.400"}>
+                    <Text fontSize="xx-small" >
+                    Active
+                    </Text>
+                </Badge>: null }
+              </MenuItem> 
               <MenuItem>Profile</MenuItem>
               <MenuItem onClick={onLogout}>Log Out</MenuItem>
               {isVerified ? (
@@ -406,7 +424,7 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
 
 const MobileNav = () => {
   const tokenlocalstorage = localStorage.getItem("token");
-  const { NIM, username, isVerified, profilePic } = useSelector(
+  const { NIM, username, isVerified, profilePic, cart, loan } = useSelector(
     (state) => state.userSlice.value
   );
   const dispatch = useDispatch();
@@ -416,6 +434,8 @@ const MobileNav = () => {
 
   const onLogout = () => {
     dispatch(logout());
+    dispatch(cartDel())
+    dispatch(loanDel())
     localStorage.removeItem("token");
   };
 
@@ -426,15 +446,22 @@ const MobileNav = () => {
         NIM: inputNIM.current.value,
       };
 
-      console.log(user);
-
       const result = await Axios.post(url, user);
+
+      const res = await Axios.get(`http://localhost:2000/cart/${result.data.isUserExist.NIM}`);
+      dispatch(cartSync(res.data))
+
+      const loan = await Axios.get(`http://localhost:2000/loan/${result.data.isUserExist.NIM}`);
+      dispatch(loanSync(loan.data))
 
       dispatch(
         login({
           NIM: result.data.isUserExist.NIM,
           username: result.data.isUserExist.username,
           email: result.data.isUserExist.email,
+          isVerified: result.data.isUserExist.isVerified,
+          cart: res.data.length,
+          loan: loan.data.length
         })
       );
 
@@ -508,6 +535,14 @@ const MobileNav = () => {
               </Flex>
             </MenuButton>
             <MenuList alignItems={"center"}>
+            <MenuItem as={Link} to="/loan">Loan 
+                {loan !== 0 ?
+                <Badge ml="2" borderRadius="xl" alignSelf="center" color={"pink.400"}>
+                    <Text fontSize="xx-small" >
+                    Active
+                    </Text>
+                </Badge>: null }
+              </MenuItem> 
               <MenuItem>Profile</MenuItem>
               <MenuItem onClick={onLogout}>Log Out</MenuItem>
               {isVerified ? (
