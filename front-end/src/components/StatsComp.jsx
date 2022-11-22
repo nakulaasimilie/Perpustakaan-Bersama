@@ -162,21 +162,6 @@ export default function StatsComp() {
           stat={data2.length}
           icon={<CheckIcon />}
         />
-        <StatsCard
-          title={'Users'}
-          stat={data.length}
-          icon={<BsPerson size={'3em'} />}
-        />
-        <StatsCard
-          title={'Books'}
-          stat={data1.length}
-          icon={<FiServer size={'3em'} />}
-        />
-        <StatsCard
-          title={'Transactions'}
-          stat={'Coming Soon'}
-          icon={<GoLocation size={'3em'} />}
-        />
       </SimpleGrid>
     </Box>
   );

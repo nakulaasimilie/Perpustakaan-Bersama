@@ -128,29 +128,6 @@ export const AdminDashboard = () => {
     }
   };
 
-  const onUpdate = async (id) => {
-    try {
-      const updateBook = {
-        Title: inputTitle.current.value,
-        Author: inputAuthor.current.value,
-        Publisher: inputPublisher.current.value,
-        Genre: inputGenre.current.value,
-        Abstract: inputAbstract.current.value,
-      };
-      console.log(updateBook);
-      let inputFromUser = prompt('Edit Here');
-      getData();
-      console.log(inputFromUser);
-      const res = await Axios.patch(
-        `http://localhost:2000/book/update/${id}`,
-        updateBook
-      );
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   // const onUpdate = async (id) => {
   //   try {
   //     const updateBook = {

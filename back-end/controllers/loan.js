@@ -107,17 +107,19 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+
   getAll: async (req, res) => {
     try {
       const users = await loan.findAll({
         attributes: [
           'no_invoice',
           'Borrow_date',
-          'Return_data',
+          'Return_date',
           'transaction_status',
           'UserNIM',
         ],
       });
+      res.status(200).send(users);
     } catch (err) {
       res.status(400).send(err);
     }
