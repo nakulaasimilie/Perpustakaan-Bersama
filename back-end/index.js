@@ -26,6 +26,6 @@ server.use('/admin', adminRoutes);
 server.use('/loan', loanRoutes);
 
 server.listen(PORT, () => {
-  // db.sequelize.sync({ alter: true });
+  db.sequelize.sync({ alter: true });
   console.log('Success Running at PORT: ' + PORT);
 });
