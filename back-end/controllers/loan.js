@@ -9,6 +9,9 @@ const { Op } = require("sequelize");
 module.exports = {
     addLoan: async (req, res) => {
         try {
+            let date = new Date()
+            date.setDate(date.getDate() + 5);
+
             const { Borrow_date, Return_date, data, NIM, isVerified, isActive } = req.body;
 
             if(!isVerified) throw "Akun anda belum di verifikasi, Lakukan Verifikasi terlebih dahulu"
@@ -16,8 +19,8 @@ module.exports = {
             if(Borrow_date === "" || Return_date === "") throw "Input tanggal peminjaman dan pengembalian dengn benar"
             if(Borrow_date === Return_date) throw  "Tanggal peminjaman dan pengembalian tidak boleh sama"
             if(Borrow_date > Return_date) throw  "Tanggal pengembalian tidak boleh lebih kecil dari peminjaman"
+            if(date < new Date(Return_date)) throw  "Peminjaman Tidak Boleh Lebih Dari 5 Hari"
 
-            let date = new Date()
             let tahun = date.getFullYear()
             const inv = await loan.findAll()
             const no_invoice = `OL-${tahun}${inv.length + 1}`
@@ -57,7 +60,7 @@ module.exports = {
                 where: {
                     [Op.and]: {
                         UserNIM: NIM,
-                        transaction_status: ["Pengajuan", "Peminjaman"]
+                        transaction_status: ["Peminjaman"]
                     },
                 },
                 include: [
@@ -77,10 +80,10 @@ module.exports = {
             res.status(400).send(err);
         }
     },
-    cancelLoan: async (req, res) => {
+    returnLoan: async (req, res) => {
         try {
             await loan.update(
-                { transaction_status: "Batal" },
+                { transaction_status: "Selesai" },
                 {
                     where: {
                         no_invoice: req.params.inv,

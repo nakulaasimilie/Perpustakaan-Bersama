@@ -53,13 +53,13 @@ module.exports = {
                     UserNIM: NIM,
                 },
                 include: [
-                {
-                    model: user,
-                    attributes: ["username"],
-                },
-                {
-                    model: book,
-                }
+                    {
+                        model: user,
+                        attributes: ["username"],
+                    },
+                    {
+                        model: book,
+                    }
                 ],
             });
             res.status(200).send(carts);

@@ -18,11 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: "username",
       },
-      // email: {
-      //   type: DataTypes.STRING,
-      //   allowNull: false,
-      //   unique: "email",
-      // },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -34,14 +29,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
       },
-      // isAdmin: {
-      //   type: DataTypes.BOOLEAN,
-      //   defaultValue: false,
-      // },
-      // isVerified: {
-      //   type: DataTypes.BOOLEAN,
-      //   defaultValue: false,
-      // },
     },
     {
       sequelize,
