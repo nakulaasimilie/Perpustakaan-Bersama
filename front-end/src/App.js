@@ -9,7 +9,7 @@ import { AdminPage } from './pages/AdminPage';
 import { VerificationPage } from './pages/verificationPage';
 import DetailPage from './pages/DetailPage';
 import { AdminDashboard } from './pages/AdminDashboard';
-import cartSync from './redux/cartSlice';
+import { cartSync } from './redux/cartSlice';
 import { loanSync } from './redux/loanSlice';
 import CartPage from './pages/CartPage';
 import LoanPage from './pages/LoanPage';
@@ -20,8 +20,6 @@ function App() {
   const token = localStorage.getItem('token');
   const tokenAdmin = localStorage.getItem('tokenAdmin');
 
-  const { NIM } = useSelector((state) => state.userSlice.value);
-
   const keepLogin = async () => {
     try {
       const res = await Axios.get(`http://localhost:2000/user/keepLogin`, {
@@ -29,11 +27,6 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      const result = await Axios.get(
-        `http://localhost:2000/cart/${res.data.NIM}`
-      );
-      dispatch(cartSync(result.data));
 
       const cart = await Axios.get(
         `http://localhost:2000/cart/${res.data.NIM}`
@@ -51,7 +44,7 @@ function App() {
           username: res.data.username,
           email: res.data.email,
           isVerified: res.data.isVerified,
-          cart: result.data.length,
+          cart: cart.data.length,
           loan: loan.data.length,
         })
       );
