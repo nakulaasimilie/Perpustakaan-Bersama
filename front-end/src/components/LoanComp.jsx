@@ -11,14 +11,14 @@ export default function CartDetail() {
     const data = useSelector((state) => state.loanSlice.value);
     const dispatch = useDispatch()
     
-    const onCancel = async (inv) => {
+    const onReturn = async (inv) => {
         try {
             await Axios.patch(`http://localhost:2000/loan/${inv}`);
         
             Swal.fire({
                 icon: 'success',
                 title: 'Good Job',
-                text: "Loan Berhasil Dibatalkan",
+                text: "Buku Berhasil Dikembalikan",
                 timer: 2000,
                 customClass: {
                     container: 'my-swal'
@@ -143,9 +143,9 @@ return (
                 </>
                     )
                 })}
-                {i.transaction_status === "Pengajuan" ?
+                {i.transaction_status === "Peminjaman" ?
                 <Button
-                    onClick={() => onCancel(i.no_invoice)}
+                    onClick={() => onReturn(i.no_invoice)}
                     justifyContent="space-between"
                     borderColor='pink.400'
                     borderRadius='9px'
@@ -153,7 +153,7 @@ return (
                     size='sm'
                     my='5px'
                     _hover={{ bg: 'pink', color: 'white' }}>
-                    Cancel
+                    Selesai
                 </Button>
                 : null }
                 </Box>

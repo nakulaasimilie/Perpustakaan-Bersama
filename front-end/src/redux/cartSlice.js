@@ -7,7 +7,7 @@ export const cartSlice = createSlice({
         },
     reducers: {
         cartSync: (state, action) => {
-        state.value = action.payload;
+            state.value = action.payload;
         },
         cartDel: (state) => {
             state.value = []

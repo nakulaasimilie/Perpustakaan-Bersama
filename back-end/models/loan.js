@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             transaction_status: {
                 type: DataTypes.ENUM('Pengajuan', 'Peminjaman' ,'Selesai', 'Batal'),
-                defaultValue: 'Pengajuan',
+                defaultValue: 'Peminjaman',
                 allowNull: false,
             },
         },
