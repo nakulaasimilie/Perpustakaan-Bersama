@@ -31,39 +31,24 @@ import {
   useColorMode,
   useDisclosure,
   Heading,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
-  FormControl,
-  ModalHeader,
-  ModalFooter,
-  ModalCloseButton,
 } from "@chakra-ui/react";
 
 import StatsComp from "../components/StatsComp";
 import { syncName } from "../redux/nameSlice";
 import { logoutAdmin } from "../redux/adminSlice";
-import { EditIcon, MoonIcon, SunIcon, AddIcon } from "@chakra-ui/icons";
+import { EditIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import BookCard from "../components/AllBookComp";
 import CreateComp from "../components/CreateComp";
 import { DeleteIcon } from "@chakra-ui/icons";
-import UpdateComp from "../components/UpdateComp";
-import { useState } from "react";
-import { loanSync } from "../redux/loanSlice";
 
 export const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const [edit, setEdit] = useState({});
   const data = useSelector((state) => state.listSlice.value);
   const data1 = useSelector((state) => state.nameSlice.value);
-  const data2 = useSelector((state) => state.loanSlice.value);
   const { username } = useSelector((state) => state.adminSlice.value);
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const initialRef = useRef(null);
-  const finalRef = useRef(null);
   const navigate = useNavigate();
   const inputTitle = useRef("");
   const inputAuthor = useRef("");
@@ -105,33 +90,15 @@ export const AdminDashboard = () => {
     getUser();
   }, []);
 
-
-  const getLoan = async (NIM) => {
-    try {
-      const res = await Axios.get(`http://localhost:2000/loan/${NIM}`);
-      console.log(res);
-      dispatch(loanSync(res));
-
   const onDelete = async (id) => {
     try {
       const res = await Axios.delete(`http://localhost:2000/book/remove/${id}`);
       console.log(res);
       getData();
-
     } catch (err) {
       console.log(err);
     }
   };
-
-  useEffect(() => {
-    getLoan();
-  }, []);
-
-  const onDelete = async (id) => {
-    try {
-      const res = await Axios.delete(`http://localhost:2000/book/remove/${id}`);
-      console.log(res);
-      getData();
 
   const onUpdate = async (id) => {
     try {
@@ -146,42 +113,17 @@ export const AdminDashboard = () => {
       let inputFromUser = prompt("Edit Here");
       getData();
       console.log(inputFromUser);
+
       const res = await Axios.patch(
         `http://localhost:2000/book/update/${id}`,
         updateBook
       );
+
       console.log(res);
     } catch (err) {
       console.log(err);
     }
   };
-
-
-  // const onUpdate = async (id) => {
-  //   try {
-  //     const updateBook = {
-  //       Title: inputTitle.current.value,
-  //       Author: inputAuthor.current.value,
-  //       Publisher: inputPublisher.current.value,
-  //       Genre: inputGenre.current.value,
-  //       Abstract: inputAbstract.current.value,
-  //     };
-  // console.log(updateBook);
-  // let inputFromUser = prompt("Edit Here");
-  // getData();
-  // console.log(inputFromUser);
-
-  //     const res = await Axios.patch(
-  //       `http://localhost:2000/book/update/${id}`,
-  //       updateBook
-  //     );
-
-  //     console.log(res);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
 
   return (
     <div>
@@ -232,7 +174,6 @@ export const AdminDashboard = () => {
       </Box>
       <StatsComp />
 
-      <Center>{/* <AddIcon /> */}</Center>
       <Stack mt="20px" mb="20px" ml="20px" mr="20px">
         <Box m="20px">
           <Heading align="center">Books</Heading>
@@ -272,10 +213,8 @@ export const AdminDashboard = () => {
                           <Button
                             colorScheme="teal"
                             display="flex"
-                            onClick={() => setEdit(item)}
                             justifyContent=""
                             onClick={() => onUpdate(item.id)}
-
                           >
                             <EditIcon />
                           </Button>
@@ -313,42 +252,9 @@ export const AdminDashboard = () => {
               })}
             </Table>
           </TableContainer>
-
-          <Heading align={"center"}>Transactions</Heading>
-          <TableContainer>
-            <Table variant="striped" colorScheme="blue">
-              <Thead>
-                <Tr>
-                  <Th>Invoice</Th>
-                  <Th>Borrow Date</Th>
-                  <Th>Return Date</Th>
-                  <Th>Transaction Status</Th>
-                  <Th>NIM</Th>
-                </Tr>
-              </Thead>
-              {data2.map((item) => {
-                return (
-                  <Tbody>
-                    <Tr>
-                      <Td>{item.no_invoice}</Td>
-                      <Td>{item.Borrow_date}</Td>
-                      <Td>{item.Return_date}</Td>
-                      <Td>{item.transaction_status}</Td>
-                      <Td>{item.UserNIM}</Td>
-                    </Tr>
-                  </Tbody>
-                );
-              })}
-            </Table>
-          </TableContainer>
-          <CreateComp />
-          <UpdateComp data={edit} />
-
-
           <CreateComp />
 
           {/* <UpdateComp /> */}
-
           <BookCard />
         </Box>
       </Stack>
