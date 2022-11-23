@@ -31,24 +31,39 @@ import {
   useColorMode,
   useDisclosure,
   Heading,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+  FormControl,
+  ModalHeader,
+  ModalFooter,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 
 import StatsComp from "../components/StatsComp";
 import { syncName } from "../redux/nameSlice";
 import { logoutAdmin } from "../redux/adminSlice";
-import { EditIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { EditIcon, MoonIcon, SunIcon, AddIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import BookCard from "../components/AllBookComp";
 import CreateComp from "../components/CreateComp";
 import { DeleteIcon } from "@chakra-ui/icons";
+import UpdateComp from "../components/UpdateComp";
+import { useState } from "react";
+import { loanSync } from "../redux/loanSlice";
 
 export const AdminDashboard = () => {
   const dispatch = useDispatch();
+  const [edit, setEdit] = useState({});
   const data = useSelector((state) => state.listSlice.value);
   const data1 = useSelector((state) => state.nameSlice.value);
+  const data2 = useSelector((state) => state.loanSlice.value);
   const { username } = useSelector((state) => state.adminSlice.value);
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const initialRef = useRef(null);
+  const finalRef = useRef(null);
   const navigate = useNavigate();
   const inputTitle = useRef("");
   const inputAuthor = useRef("");
@@ -90,36 +105,25 @@ export const AdminDashboard = () => {
     getUser();
   }, []);
 
-  const onDelete = async (id) => {
+  const getLoan = async () => {
     try {
-      const res = await Axios.delete(`http://localhost:2000/book/remove/${id}`);
-      console.log(res);
-      getData();
+      const res = await Axios.get(`http://localhost:2000/loan/list`);
+      console.log(res.data);
+      dispatch(loanSync(res.data));
     } catch (err) {
       console.log(err);
     }
   };
 
-  const onUpdate = async (id) => {
+  useEffect(() => {
+    getLoan();
+  }, []);
+
+  const onDelete = async (id) => {
     try {
-      const updateBook = {
-        Title: inputTitle.current.value,
-        Author: inputAuthor.current.value,
-        Publisher: inputPublisher.current.value,
-        Genre: inputGenre.current.value,
-        Abstract: inputAbstract.current.value,
-      };
-      console.log(updateBook);
-      let inputFromUser = prompt("Edit Here");
-      getData();
-      console.log(inputFromUser);
-
-      const res = await Axios.patch(
-        `http://localhost:2000/book/update/${id}`,
-        updateBook
-      );
-
+      const res = await Axios.delete(`http://localhost:2000/book/remove/${id}`);
       console.log(res);
+      getData();
     } catch (err) {
       console.log(err);
     }
@@ -173,6 +177,7 @@ export const AdminDashboard = () => {
         </Flex>
       </Box>
       <StatsComp />
+      <Center>{/* <AddIcon /> */}</Center>
 
       <Stack mt="20px" mb="20px" ml="20px" mr="20px">
         <Box m="20px">
@@ -213,8 +218,7 @@ export const AdminDashboard = () => {
                           <Button
                             colorScheme="teal"
                             display="flex"
-                            justifyContent=""
-                            onClick={() => onUpdate(item.id)}
+                            onClick={() => setEdit(item)}
                           >
                             <EditIcon />
                           </Button>
@@ -252,93 +256,39 @@ export const AdminDashboard = () => {
               })}
             </Table>
           </TableContainer>
+          <Heading align={"center"}>Transactions</Heading>
+          <TableContainer>
+            <Table variant="striped" colorScheme="blue">
+              <Thead>
+                <Tr>
+                  <Th>Invoice</Th>
+                  <Th>Borrow Date</Th>
+                  <Th>Return Date</Th>
+                  <Th>Transaction Status</Th>
+                  <Th>NIM</Th>
+                </Tr>
+              </Thead>
+              {data2?.map((item) => {
+                return (
+                  <Tbody>
+                    <Tr>
+                      <Td>{item.no_invoice}</Td>
+                      <Td>{item.Borrow_date}</Td>
+                      <Td>{item.Return_date}</Td>
+                      <Td>{item.transaction_status}</Td>
+                      <Td>{item.UserNIM}</Td>
+                    </Tr>
+                  </Tbody>
+                );
+              })}
+            </Table>
+          </TableContainer>
           <CreateComp />
+          <UpdateComp data={edit} />
 
-          {/* <UpdateComp /> */}
           <BookCard />
         </Box>
       </Stack>
     </div>
   );
 };
-
-// return (
-//   <Flex
-//     minH={"100vh"}
-//     align={"center"}
-//     justify={"center"}
-//     bg={useColorModeValue("white.50", "white.800")}
-//   >
-//     <Stack
-//       spacing={4}
-//       w={"full"}
-//       maxW={"md"}
-//       bg={useColorModeValue("white", "white.700")}
-//       rounded={"xl"}
-//       boxShadow={"lg"}
-//       p={6}
-//       my={12}
-//     >
-//       <Heading
-//         lineHeight={1.1}
-//         fontSize={{ base: "2xl", sm: "3xl" }}
-//         textAlign="center"
-//       >
-//         Update Data Here
-//       </Heading>
-//       <Flex></Flex>
-//       <Flex>
-//         <FormControl id="title" isRequired>
-//           <FormLabel>Title</FormLabel>
-//           <Input
-//             _placeholder={{ color: "gray.500" }}
-//             type="text"
-//             ref={inputTitle}
-//           />
-//         </FormControl>
-//       </Flex>
-//       <FormControl id="author" isRequired>
-//         <FormLabel>Author</FormLabel>
-//         <Input
-//           _placeholder={{ color: "gray.500" }}
-//           type="author"
-//           ref={inputAuthor}
-//         />
-//       </FormControl>
-//       <FormControl id="publisher" isRequired>
-//         <FormLabel>Publisher</FormLabel>
-//         <Input
-//           _placeholder={{ color: "gray.500" }}
-//           type="publisher"
-//           ref={inputPublisher}
-//         />
-//       </FormControl>
-//       <FormControl id="genre" isRequired>
-//         <FormLabel>Genre</FormLabel>
-//         <Input
-//           _placeholder={{ color: "gray.500" }}
-//           type="genre"
-//           ref={inputGenre}
-//         />
-//       </FormControl>
-//       <FormControl id="abstract" isRequired>
-//         <FormLabel>Abstract</FormLabel>
-//         <Textarea _placeholder={{ color: "gray.500" }} ref={inputAbstract} />
-//       </FormControl>
-
-//       <Stack spacing={6} direction={["column", "row"]}>
-//         <Button
-//           bg={"blue.400"}
-//           color={"white"}
-//           w="full"
-//           _hover={{
-//             bg: "blue.500",
-//           }}
-//           onClick={onUpdate}
-//         >
-//           Submit
-//         </Button>
-//       </Stack>
-//     </Stack>
-//   </Flex>
-// );

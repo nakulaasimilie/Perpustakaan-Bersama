@@ -32,7 +32,7 @@ const url = "http://localhost:2000/admin/login";
 
 export default function LoginAdmin() {
   const { username } = useSelector((state) => state.userSlice.value);
-  const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
+
   const { colorMode, toggleColorMode } = useColorMode();
   const tokenlocalstorage = localStorage.getItem("tokenAdmin");
   const dispatch = useDispatch();

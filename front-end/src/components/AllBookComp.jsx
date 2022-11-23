@@ -123,7 +123,7 @@ export default function BookCard() {
       const res = await Axios.get(`http://localhost:2000/cart/${NIM}`);
       dispatch(cartSync(res.data));
       dispatch(addCart());
-      getData()
+      getData();
 
       Swal.fire({
         icon: "success",

@@ -19,6 +19,7 @@ function App() {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const tokenAdmin = localStorage.getItem("tokenAdmin");
+  const { NIM } = useSelector((state) => state.userSlice.value);
 
   const keepLogin = async () => {
     try {
@@ -71,11 +72,11 @@ function App() {
   };
 
   useEffect(() => {
-        tokenAdmin
+    tokenAdmin
       ? keepLoginAdmin()
-        : token
+      : token
       ? keepLogin()
-        : console.log("Open Library");
+      : console.log("Open Library");
   });
 
   return (

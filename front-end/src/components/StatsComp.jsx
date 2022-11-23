@@ -7,18 +7,28 @@ import {
   StatLabel,
   StatNumber,
   useColorModeValue,
+  useDisclosure,
+  Modal,
+  Button,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { BsPerson } from "react-icons/bs";
 import { FiServer } from "react-icons/fi";
 import { GoLocation } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
-import { syncName } from "../redux/nameSlice";
-import { syncData } from "../redux/listSlice";
-import Axios from "axios";
 import { useEffect } from "react";
+import { UsersTable } from "./UsersTable";
+import { BooksTable } from "./BooksTable";
+import { CheckIcon } from "@chakra-ui/icons";
 
 function StatsCard(props) {
   const { title, stat, icon } = props;
+
   return (
     <Stat
       px={{ base: 2, md: 4 }}
@@ -50,37 +60,11 @@ function StatsCard(props) {
 }
 
 export default function StatsComp() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const data = useSelector((state) => state.nameSlice.value);
   const data1 = useSelector((state) => state.listSlice.value);
-
-  const getData = async () => {
-    try {
-      const res = await Axios.get(`http://localhost:2000/user/allUser`);
-      console.log(res.data);
-      dispatch(syncName(res.data));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getBook = async () => {
-    try {
-      const res = await Axios.get(`http://localhost:2000/book/list`);
-      console.log(res.data);
-      dispatch(syncData(res.data));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getBook();
-  }, []);
+  const data2 = useSelector((state) => state.loanSlice.value);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Box maxW="7xl" mx={"auto"} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
@@ -92,20 +76,63 @@ export default function StatsComp() {
       ></chakra.h1>
 
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
+        {/* <Button onClick={onOpen} variant="ghost"> */}
         <StatsCard
           title={"Users"}
           stat={data.length}
           icon={<BsPerson size={"3em"} />}
         />
+        {/* </Button> */}
+        {/* <Modal
+          isCentered
+          onClose={onClose}
+          isOpen={isOpen}
+          motionPreset="slideInBottom"
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Users List</ModalHeader>
+            <UsersTable />
+            <ModalCloseButton />
+            <ModalBody></ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal> */}
+
+        {/* <Button onClick={onOpen} variant="ghost"> */}
         <StatsCard
           title={"Books"}
           stat={data1.length}
           icon={<FiServer size={"3em"} />}
-        />
+        ></StatsCard>
+        {/* </Button> */}
+        {/* <Modal
+          isCentered
+          onClose={onClose}
+          isOpen={isOpen}
+          motionPreset="slideInBottom"
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Books List</ModalHeader>
+            <BooksTable />
+            <ModalCloseButton />
+            <ModalBody></ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal> */}
         <StatsCard
           title={"Transactions"}
-          stat={"Coming Soon"}
-          icon={<GoLocation size={"3em"} />}
+          stat={data2.length}
+          icon={<CheckIcon />}
         />
       </SimpleGrid>
     </Box>
