@@ -68,7 +68,7 @@ module.exports = {
         where: {
           [Op.and]: {
             UserNIM: NIM,
-            transaction_status: ['Peminjaman'],
+            transaction_status: ['Pengajuan', 'Peminjaman'],
           },
         },
         include: [
@@ -88,10 +88,10 @@ module.exports = {
       res.status(400).send(err);
     }
   },
-  returnLoan: async (req, res) => {
+  cancelLoan: async (req, res) => {
     try {
       await loan.update(
-        { transaction_status: 'Selesai' },
+        { transaction_status: 'Batal' },
         {
           where: {
             no_invoice: req.params.inv,
@@ -121,6 +121,27 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
+  returnLoan: async (req, res) => {
+    try {
+      await loan.update(
+        { transaction_status: 'Selesai' },
+        {
+          where: {
+            no_invoice: req.params.inv,
+          },
+        }
+      );
+
+      res.status(200).send({
+        massage: 'Transaksi Succes',
+      });
+    } catch (err) {
+      console.log(err);
       res.status(400).send(err);
     }
   },

@@ -10,7 +10,21 @@ import {
   Icon,
   Popover,
   PopoverTrigger,
-  PopoverContent, PopoverHeader, PopoverArrow, PopoverCloseButton, PopoverBody, TableContainer, Table, Thead, Tr, Th, Td, Tbody, PopoverFooter, ButtonGroup, Badge,
+  PopoverContent,
+  PopoverHeader,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverBody,
+  TableContainer,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Td,
+  Tbody,
+  PopoverFooter,
+  ButtonGroup,
+  Badge,
   useColorModeValue,
   useDisclosure,
   useColorMode,
@@ -40,7 +54,7 @@ import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 import { loanDel, loanSync } from "../redux/loanSlice";
 
 const url = "http://localhost:2000/user/login";
@@ -61,8 +75,8 @@ export default function NavbarComp() {
 
   const onLogout = () => {
     dispatch(logout());
-    dispatch(cartDel())
-    dispatch(loanDel())
+    dispatch(cartDel());
+    dispatch(loanDel());
     localStorage.removeItem("token");
   };
 
@@ -75,11 +89,15 @@ export default function NavbarComp() {
 
       const result = await Axios.post(url, user);
 
-      const res = await Axios.get(`http://localhost:2000/cart/${result.data.isUserExist.NIM}`);
-      dispatch(cartSync(res.data))
+      const res = await Axios.get(
+        `http://localhost:2000/cart/${result.data.isUserExist.NIM}`
+      );
+      dispatch(cartSync(res.data));
 
-      const loan = await Axios.get(`http://localhost:2000/loan/${result.data.isUserExist.NIM}`);
-      dispatch(loanSync(loan.data))
+      const loan = await Axios.get(
+        `http://localhost:2000/loan/${result.data.isUserExist.NIM}`
+      );
+      dispatch(loanSync(loan.data));
 
       dispatch(
         login({
@@ -88,7 +106,7 @@ export default function NavbarComp() {
           email: result.data.isUserExist.email,
           isVerified: result.data.isUserExist.isVerified,
           cart: res.data.length,
-          loan: loan.data.length
+          loan: loan.data.length,
         })
       );
 
@@ -138,24 +156,21 @@ export default function NavbarComp() {
       await Axios.delete(`http://localhost:2000/cart/${id}`);
 
       Swal.fire({
-          icon: 'success',
-          title: 'Good Job',
-          text: "Cart Berhasil Dihapus",
-          timer: 2000,
-          customClass: {
-              container: 'my-swal'
-          }
-      })
+        icon: "success",
+        title: "Good Job",
+        text: "Cart Berhasil Dihapus",
+        timer: 2000,
+        customClass: {
+          container: "my-swal",
+        },
+      });
       const result = await Axios.get(`http://localhost:2000/cart/${NIM}`);
-      dispatch(cartSync(result.data))
-      dispatch(delCart())
-      
-
+      dispatch(cartSync(result.data));
+      dispatch(delCart());
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
-
+  };
 
   return (
     <Box>
@@ -170,7 +185,13 @@ export default function NavbarComp() {
         borderColor={useColorModeValue("gray.200", "gray.900")}
         align={"center"}
       >
-        <Flex as={Link} to="/" flex={{ base: 1 }} justify={{ md: "start" }} align="center">
+        <Flex
+          as={Link}
+          to="/"
+          flex={{ base: 1 }}
+          justify={{ md: "start" }}
+          align="center"
+        >
           <Image
             src="https://openlibrary.org/static/images/openlibrary-logo-tighter.svg"
             w="32"
@@ -189,66 +210,83 @@ export default function NavbarComp() {
 
         <Popover isLazy>
           <PopoverTrigger>
-          <Button
-            bg={useColorModeValue("white", "gray.800")}
-          >
-            <Icon boxSize="6" as={IoCartOutline} mr='5px'x />
-            {username && cart !== 0 ?
-            <Badge p="1" ml="-2" mt="-3"  borderRadius="full"><Text fontSize="xx-small">{cart}</Text></Badge>
-            : null }
-          </Button>
+            <Button bg={useColorModeValue("white", "gray.800")}>
+              <Icon boxSize="6" as={IoCartOutline} mr="5px" x />
+              {username && cart !== 0 ? (
+                <Badge p="1" ml="-2" mt="-3" borderRadius="full">
+                  <Text fontSize="xx-small">{cart}</Text>
+                </Badge>
+              ) : null}
+            </Button>
           </PopoverTrigger>
           <PopoverContent>
-              <PopoverHeader fontWeight='semibold'>My Cart</PopoverHeader>
-              <PopoverArrow />
-              <PopoverCloseButton />
-              <PopoverBody>
+            <PopoverHeader fontWeight="semibold">My Cart</PopoverHeader>
+            <PopoverArrow />
+            <PopoverCloseButton />
+            <PopoverBody>
               <TableContainer bg="grey.100">
-                  <Table >
-                      <Thead>
-                      <Tr>
-                          <Th>Img</Th>
-                          <Th>Title</Th>
-                          <Th>Action</Th>
-                      </Tr>
-                      </Thead>
-                      <Tbody>
-                          {data?.map((item, index) => {
-                          return (
-                          <Tr key={index}>
-                              <Td><Stack><Image
-                                  boxSize='35px'
-                                  objectFit='cover'
-                                  src={item.Book.Images}
-                                  alt={item.Book.Title}
-                              /></Stack></Td>
-                              <Td>
-                                <Box display='flex' fontSize='xs'>
-                                  <Text fontWeight='bold' mr='5px'> {item.Book.Title} </Text>
-                                </Box>
-                                <Box display='flex' fontSize='xs'>
-                                  <Text fontWeight='bold' color='#213360' textColor='#FF6B6B' mr='5px'> {item.Book.Author} </Text>
-                                </Box>
-                              </Td>
-                              <Td>
-                                  <Button onClick={() => onDeleteCart(item.id)}>
-                                    <Icon boxSize="4" as={DeleteIcon} />
-                                  </Button>
-                              </Td>
-                          </Tr>
-                          );
-                      })}
-                      </Tbody>
-                      </Table>
-                  </TableContainer>
-              </PopoverBody>
-              <PopoverFooter display='flex' justifyContent='flex-end'>
-                  <ButtonGroup size='sm'>
-                  <Button as={Link} to="/cart" colorScheme='pink' >Selengkapnya</Button>
-                  </ButtonGroup>
-              </PopoverFooter>
+                <Table>
+                  <Thead>
+                    <Tr>
+                      <Th>Img</Th>
+                      <Th>Title</Th>
+                      <Th>Action</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {data?.map((item, index) => {
+                      return (
+                        <Tr key={index}>
+                          <Td>
+                            <Stack>
+                              <Image
+                                boxSize="35px"
+                                objectFit="cover"
+                                src={item.Book.Images}
+                                alt={item.Book.Title}
+                              />
+                            </Stack>
+                          </Td>
+                          <Td>
+                            <Box display="flex" fontSize="xs">
+                              <Text fontWeight="bold" mr="5px">
+                                {" "}
+                                {item.Book.Title}{" "}
+                              </Text>
+                            </Box>
+                            <Box display="flex" fontSize="xs">
+                              <Text
+                                fontWeight="bold"
+                                color="#213360"
+                                textColor="#FF6B6B"
+                                mr="5px"
+                              >
+                                {" "}
+                                {item.Book.Author}{" "}
+                              </Text>
+                            </Box>
+                          </Td>
+                          <Td>
+                            <Button onClick={() => onDeleteCart(item.id)}>
+                              <Icon boxSize="4" as={DeleteIcon} />
+                            </Button>
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </PopoverBody>
+            <PopoverFooter display="flex" justifyContent="flex-end">
+              <ButtonGroup size="sm">
+                <Button as={Link} to="/cart" colorScheme="pink">
+                  Selengkapnya
+                </Button>
+              </ButtonGroup>
+            </PopoverFooter>
           </PopoverContent>
-          </Popover>
+        </Popover>
 
         {tokenlocalstorage ? (
           <Menu>
@@ -261,26 +299,27 @@ export default function NavbarComp() {
               p="6"
             >
               <Flex align="center">
-                <Avatar
-                  size="sm"
-                  name={username}
-                  src={profilePic}
-                />
+                <Avatar size="sm" name={username} src={profilePic} />
                 <Box ml="3">
                   <Text fontWeight="bold">{username}</Text>
-                  <Text fontSize="xs" >{NIM}</Text>
+                  <Text fontSize="xs">{NIM}</Text>
                 </Box>
               </Flex>
             </MenuButton>
             <MenuList alignItems={"center"}>
-              <MenuItem as={Link} to="/loan">Loan 
-                {loan !== 0 ?
-                <Badge ml="2" borderRadius="xl" alignSelf="center" color={"pink.400"}>
-                    <Text fontSize="xx-small" >
-                    Active
-                    </Text>
-                </Badge>: null }
-              </MenuItem> 
+              <MenuItem as={Link} to="/loan">
+                Loan
+                {loan !== 0 ? (
+                  <Badge
+                    ml="2"
+                    borderRadius="xl"
+                    alignSelf="center"
+                    color={"pink.400"}
+                  >
+                    <Text fontSize="xx-small">Active</Text>
+                  </Badge>
+                ) : null}
+              </MenuItem>
               <MenuItem>Profile</MenuItem>
               <MenuItem onClick={onLogout}>Log Out</MenuItem>
               {isVerified ? (
@@ -434,8 +473,8 @@ const MobileNav = () => {
 
   const onLogout = () => {
     dispatch(logout());
-    dispatch(cartDel())
-    dispatch(loanDel())
+    dispatch(cartDel());
+    dispatch(loanDel());
     localStorage.removeItem("token");
   };
 
@@ -448,11 +487,15 @@ const MobileNav = () => {
 
       const result = await Axios.post(url, user);
 
-      const res = await Axios.get(`http://localhost:2000/cart/${result.data.isUserExist.NIM}`);
-      dispatch(cartSync(res.data))
+      const res = await Axios.get(
+        `http://localhost:2000/cart/${result.data.isUserExist.NIM}`
+      );
+      dispatch(cartSync(res.data));
 
-      const loan = await Axios.get(`http://localhost:2000/loan/${result.data.isUserExist.NIM}`);
-      dispatch(loanSync(loan.data))
+      const loan = await Axios.get(
+        `http://localhost:2000/loan/${result.data.isUserExist.NIM}`
+      );
+      dispatch(loanSync(loan.data));
 
       dispatch(
         login({
@@ -461,7 +504,7 @@ const MobileNav = () => {
           email: result.data.isUserExist.email,
           isVerified: result.data.isUserExist.isVerified,
           cart: res.data.length,
-          loan: loan.data.length
+          loan: loan.data.length,
         })
       );
 
@@ -523,26 +566,27 @@ const MobileNav = () => {
           <Menu>
             <MenuButton>
               <Flex>
-              <Avatar
-                  size="sm"
-                  name={username}
-                  src={profilePic}
-                />
+                <Avatar size="sm" name={username} src={profilePic} />
                 <Box ml="3">
                   <Text fontWeight="bold">{username}</Text>
-                  <Text fontSize="xs" >{NIM}</Text>
+                  <Text fontSize="xs">{NIM}</Text>
                 </Box>
               </Flex>
             </MenuButton>
             <MenuList alignItems={"center"}>
-            <MenuItem as={Link} to="/loan">Loan 
-                {loan !== 0 ?
-                <Badge ml="2" borderRadius="xl" alignSelf="center" color={"pink.400"}>
-                    <Text fontSize="xx-small" >
-                    Active
-                    </Text>
-                </Badge>: null }
-              </MenuItem> 
+              <MenuItem as={Link} to="/loan">
+                Loan
+                {loan !== 0 ? (
+                  <Badge
+                    ml="2"
+                    borderRadius="xl"
+                    alignSelf="center"
+                    color={"pink.400"}
+                  >
+                    <Text fontSize="xx-small">Active</Text>
+                  </Badge>
+                ) : null}
+              </MenuItem>
               <MenuItem>Profile</MenuItem>
               <MenuItem onClick={onLogout}>Log Out</MenuItem>
               {isVerified ? (

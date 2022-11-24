@@ -19,7 +19,6 @@ import {
 
 import Axios from 'axios';
 import { useRef } from 'react';
-// import { syncData } from "../redux/listSlice";
 
 export default function UpdateComp({ data }) {
   console.log(data);

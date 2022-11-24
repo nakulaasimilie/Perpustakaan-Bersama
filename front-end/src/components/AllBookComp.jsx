@@ -188,9 +188,15 @@ export default function BookCard() {
                   boxSize='6'
                   as={BiReset}
                   onClick={() => {
-                    async function submit() {
+                    function submit() {
                       setSearchProduct('');
+                      setOrder('id');
+                      setOrder_direction('ASC');
+                      setLimit(5);
                       document.getElementById('search').value = '';
+                      document.getElementById('category').value = '';
+                      document.getElementById('sort').value = 'ASC';
+                      document.getElementById('limit').value = '5';
                       formik.values.searchName = '';
                     }
                     submit();
@@ -203,7 +209,8 @@ export default function BookCard() {
                   <Select
                     onChange={(event) => {
                       fetchCategory(event.target.value);
-                    }}>
+                    }}
+                    id='category'>
                     <option value=''>
                       <Text color={useColorModeValue('black', 'white')}>
                         -- Category --
@@ -219,7 +226,8 @@ export default function BookCard() {
                   <Select
                     onChange={(event) => {
                       fetchProduct(event.target.value);
-                    }}>
+                    }}
+                    id='sort'>
                     <option value='ASC'>A-Z</option>
                     <option value='DESC'>Z-A</option>
                   </Select>
@@ -229,7 +237,8 @@ export default function BookCard() {
                   <Select
                     onChange={(event) => {
                       fetchLimit(event.target.value);
-                    }}>
+                    }}
+                    id='limit'>
                     <option value='5'>5</option>
                     <option value='10'>10</option>
                     <option value='50'>50</option>

@@ -101,37 +101,8 @@ export default function CreateComp() {
           <FormLabel>Abstract</FormLabel>
           <Textarea _placeholder={{ color: 'gray.500' }} ref={inputAbstract} />
         </FormControl>
-        {/* <FormControl id="picture">
-          <FormLabel>Picture</FormLabel>
-          <Stack direction={["column", "row"]} spacing={6}>
-            <Avatar size="xl" src="">
-              <AvatarBadge
-                as={IconButton}
-                size="sm"
-                rounded="full"
-                top="-10px"
-                colorScheme="red"
-                aria-label="remove Image"
-                icon={<SmallCloseIcon />}
-              />
-            </Avatar>
-            <Center></Center>
-            <Center w="full">
-              <Button w="full">Upload Picture</Button>
-            </Center>
-          </Stack>
-        </FormControl> */}
+
         <Stack spacing={6} direction={['column', 'row']}>
-          {/* <Button
-            bg={"red.400"}
-            color={"white"}
-            w="full"
-            _hover={{
-              bg: "red.500",
-            }}
-          >
-            Cancel
-          </Button> */}
           <Button
             bg={'blue.400'}
             color={'white'}
