@@ -26,7 +26,7 @@ import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Axios from "axios";
 import Swal from "sweetalert2";
-import { loginAdmin } from "../redux/adminSlice";
+import { loginAdmin } from "../redux/admin/adminSlice";
 import { useNavigate } from "react-router-dom";
 const url = "http://localhost:2000/admin/login";
 

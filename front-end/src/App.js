@@ -13,7 +13,7 @@ import { cartSync } from "./redux/cartSlice";
 import { loanSync } from "./redux/loanSlice";
 import CartPage from "./pages/CartPage";
 import LoanPage from "./pages/LoanPage";
-import { loginAdmin } from "./redux/adminSlice";
+import { loginAdmin } from "./redux/admin/adminSlice";
 
 function App() {
   const dispatch = useDispatch();

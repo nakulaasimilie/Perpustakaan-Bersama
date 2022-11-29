@@ -7,20 +7,30 @@ const cart = db.Cart;
 module.exports = {
   create: async (req, res) => {
     try {
-      const { Title, Author, Genre, Publisher, Abstract, Images } = req.body;
+      const { Title, Author, Genre, Publisher, Abstract } = req.body;
+      // let fileUploaded = req.file;
+      // console.log("controller", fileUploaded);
+
       if (!Title && !Author && !Genre && !Publisher && !Abstract && !Images)
         throw "required field";
-      const data = await book.create({
-        Title,
-        Author,
-        Genre,
-        Publisher,
-        Abstract,
-        Images,
+
+      await book.create(
+        {
+          Title,
+          Author,
+          Genre,
+          Publisher,
+          Abstract,
+        }
+        // {
+        //   Images: fileUploaded.filename,
+        // }
+      );
+      res.status(200).send({
+        data,
+        message: "Successfully Added",
       });
-      res.status(200).send("Successfully Added");
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -40,7 +50,6 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -54,7 +63,6 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -75,7 +83,6 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -98,7 +105,6 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -110,7 +116,6 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -126,15 +131,14 @@ module.exports = {
       const users = await book.findAll();
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
 
   update: async (req, res) => {
     try {
-      const { Title, Author, Genre, Publisher, Abstract, Images, Stock } =
-        req.body;
+      const { Title, Author, Genre, Publisher, Abstract, Stock } = req.body;
+      let fileUploaded = req.file;
       await book.update(
         {
           Title,
@@ -142,17 +146,19 @@ module.exports = {
           Genre,
           Publisher,
           Abstract,
-          Images,
+
           Stock,
+        },
+        {
+          Images: fileUploaded.filename,
         },
         {
           where: { id: req.params.id },
         }
       );
-      const users = await book.findAll({ where: { id: req.params.id } });
+      const users = await book.findOne({ where: { id: req.params.id } });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -165,41 +171,39 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
 
-  uploadFile: async (req, res) => {
-    try {
-      let fileUploaded = req.file;
-      console.log("controller", fileUploaded);
-      await book.update(
-        {
-          Images: fileUploaded.filename,
-        },
-        {
-          where: {
-            id: req.body.id,
-          },
-        }
-      );
-      const getBook = await book.findOne({
-        where: {
-          id: req.body.id,
-        },
-        raw: true,
-      });
-      res.status(200).send({
-        id: getBook.id,
-        Title: getBook.Title,
-        Images: getBook.Images,
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
-    }
-  },
+  // uploadFile: async (req, res) => {
+  //   try {
+  //     let fileUploaded = req.file;
+  //     console.log("controller", fileUploaded);
+  //     await book.update(
+  //       {
+  //         Images: fileUploaded.filename,
+  //       },
+  //       {
+  //         where: {
+  //           id: req.params.id,
+  //         },
+  //       }
+  //     );
+  //     const getBook = await book.findOne({
+  //       where: {
+  //         id: req.params.id,
+  //       },
+  //       raw: true,
+  //     });
+  //     res.status(200).send({
+  //       id: getBook.id,
+  //       Title: getBook.Title,
+  //       Images: getBook.Images,
+  //     });
+  //   } catch (err) {
+  //     res.status(400).send(err);
+  //   }
+  // },
 
   view2: async (req, res) => {
     try {
@@ -284,7 +288,6 @@ module.exports = {
   stock: async (req, res) => {
     try {
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },

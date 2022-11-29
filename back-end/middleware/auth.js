@@ -19,7 +19,6 @@ module.exports = {
 
       next();
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },

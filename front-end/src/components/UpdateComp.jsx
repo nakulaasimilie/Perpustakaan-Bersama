@@ -15,10 +15,19 @@ import {
   ModalContent,
   ModalBody,
   ModalFooter,
+  Box,
 } from "@chakra-ui/react";
-
 import Axios from "axios";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+
+export default function UpdateComp({ data }) {
+  const { id } = useSelector((state) => state.bookSlice.value);
+  const [image, setImage] = useState("");
+  const [profile, setProfile] = useState("Public");
+  const navigate = useNavigate();
 
 export default function UpdateComp({ data }) {
   console.log(data);
@@ -27,8 +36,8 @@ export default function UpdateComp({ data }) {
   const inputPublisher = useRef("");
   const inputGenre = useRef("");
   const inputAbstract = useRef("");
-
-  const onUpdate = async (id) => {
+  const inputImages = useRef("");
+  const onUpdate = async () => {
     try {
       const updateBook = {
         Title: inputTitle.current.value,
@@ -36,9 +45,9 @@ export default function UpdateComp({ data }) {
         Publisher: inputPublisher.current.value,
         Genre: inputGenre.current.value,
         Abstract: inputAbstract.current.value,
+        Images: inputImages.current.value,
       };
-      console.log(updateBook);
-
+      // console.log(updateBook);
       const res = await Axios.patch(
         `http://localhost:2000/book/update/${id}`,
         updateBook
@@ -49,6 +58,34 @@ export default function UpdateComp({ data }) {
       console.log(err);
     }
   };
+
+  const handleChoose = (e) => {
+    console.log("e.target.files", e.target.files);
+    setImage(e.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    const data = new FormData();
+    console.log(data);
+    data.append("file", image);
+    console.log(data.get("file"));
+
+    const resultImage = await Axios.patch(
+      `http://localhost:2000/book/update/${id}`,
+      data,
+      {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      }
+    );
+    console.log(resultImage.data);
+    setProfile(resultImage.data.Images);
+    setImage({ images: "" });
+  };
+  console.log(image);
+  console.log(profile);
+
   return (
     <Flex
       minH={"100vh"}
@@ -74,6 +111,7 @@ export default function UpdateComp({ data }) {
         >
           Edit Book
         </Heading>
+        <Flex id="formEdit">
         <Flex>
           <FormControl id="title" isRequired>
             <FormLabel>Title</FormLabel>
@@ -120,26 +158,26 @@ export default function UpdateComp({ data }) {
             defaultValue={data.Abstract}
           />
         </FormControl>
-        {/* <FormControl id="picture">
-            <FormLabel>Picture</FormLabel>
-            <Stack direction={["column", "row"]} spacing={6}>
-              <Avatar size="xl" src="">
-                <AvatarBadge
-                  as={IconButton}
-                  size="sm"
-                  rounded="full"
-                  top="-10px"
-                  colorScheme="red"
-                  aria-label="remove Image"
-                  icon={<SmallCloseIcon />}
-                />
-              </Avatar>
-              <Center></Center>
-              <Center w="full">
-                <Button w="full">Upload Picture</Button>
-              </Center>
-            </Stack>
-          </FormControl> */}
+        <FormControl id="image" isRequired onEncrypted="multipart/form-data">
+          <Box
+            style={{
+              height: "100%",
+              width: "100%",
+              backgroundImage: `url(http://localhost:2000/${profile})`
+            }}
+          >
+            {/* <Image src="https://bit.ly/dan-abramov" alt="Dan Abramov" /> */}
+          </Box>
+          <FormLabel>Images</FormLabel>
+          <Input
+            type="file"
+            accept="image/*"
+            name="file"
+            onChange={(e) => handleChoose(e)}
+            ref={inputImages}
+          ></Input>
+          <Button onClick={handleUpload}>Upload</Button>
+        </FormControl>
         <Stack spacing={6} direction={["column", "row"]}>
           {/* <Button
               bg={"red.400"}

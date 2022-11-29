@@ -8,17 +8,26 @@ import {
   Stack,
   useColorModeValue,
   Textarea,
+  Box,
+  Image,
+  HStack,
 } from "@chakra-ui/react";
-
 import Axios from "axios";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 export default function CreateComp() {
+  const { id } = useSelector((state) => state.bookSlice.value);
+  // const [image, setImage] = useState("");
+  // const [profile, setProfile] = useState("Public");
+  const params = useParams();
   const inputTitle = useRef("");
   const inputAuthor = useRef("");
   const inputPublisher = useRef("");
   const inputGenre = useRef("");
   const inputAbstract = useRef("");
+  const inputImages = useRef("");
 
   const onCreate = async () => {
     try {
@@ -28,8 +37,8 @@ export default function CreateComp() {
         Publisher: inputPublisher.current.value,
         Genre: inputGenre.current.value,
         Abstract: inputAbstract.current.value,
+        Images: inputImages.current.value,
       };
-      console.log(addBook);
 
       const res = await Axios.post(
         `http://localhost:2000/book/create`,
@@ -41,6 +50,33 @@ export default function CreateComp() {
       console.log(err);
     }
   };
+
+  // const handleChoose = (e) => {
+  //   console.log("e.target.files", e.target.files);
+  //   setImage(e.target.files[0]);
+  // };
+
+  // const handleUpload = async () => {
+  //   const data = new FormData();
+  //   console.log(data);
+  //   data.append("file", image);
+  //   console.log(data.get("file"));
+
+  //   const resultImage = await Axios.post(
+  //     `http://localhost:2000/book/uploaded/${id}`,
+  //     data,
+  //     {
+  //       headers: {
+  //         "Content-type": "multipart/form-data",
+  //       },
+  //     }
+  //   );
+  //   console.log(resultImage.data);
+  //   setProfile(resultImage.data.Images);
+  //   setImage({ images: "" });
+  // };
+  // console.log(image);
+  // console.log(profile);
   return (
     <Flex
       minH={"100vh"}
@@ -92,7 +128,7 @@ export default function CreateComp() {
             ref={inputPublisher}
           />
         </FormControl>
-        <FormControl id="genre" isRequired>
+        <FormControl id="genre">
           <FormLabel>Genre</FormLabel>
           <Input
             _placeholder={{ color: "gray.500" }}
@@ -104,7 +140,13 @@ export default function CreateComp() {
           <FormLabel>Abstract</FormLabel>
           <Textarea _placeholder={{ color: "gray.500" }} ref={inputAbstract} />
         </FormControl>
-
+        <HStack>
+          <Button
+          // onClick={handleUpload}
+          >
+            Upload
+          </Button>
+        </HStack>
         <Stack spacing={6} direction={["column", "row"]}>
           <Button
             bg={"blue.400"}
