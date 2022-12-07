@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./userSlice";
 import bookSlice from "./bookSlice";
-import adminSlice from "./adminSlice";
-import listSlice from "./listSlice";
+import adminSlice from "./admin/adminSlice";
+import listSlice from "./admin/listSlice";
 import nameSlice from "./nameSlice";
 import cartSlice from "./cartSlice";
 import loanSlice from "./loanSlice";
+import loanAdminSlice from "./admin/loanAdminSlice";
 
 export default configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export default configureStore({
     nameSlice,
     cartSlice,
     loanSlice,
+    loanAdminSlice
   },
 });

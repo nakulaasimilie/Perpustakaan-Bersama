@@ -32,9 +32,7 @@ import {
   useDisclosure,
   Heading,
 } from "@chakra-ui/react";
-
 import { EditIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
-
 import { DeleteIcon } from "@chakra-ui/icons";
 import UpdateComp from "./UpdateComp";
 
@@ -66,7 +64,7 @@ export const BooksTable = () => {
   const onDelete = async (id) => {
     try {
       const res = await Axios.delete(`http://localhost:2000/book/remove/${id}`);
-      console.log(res);
+      console.log(res)
       getData();
     } catch (err) {
       console.log(err);
@@ -82,16 +80,12 @@ export const BooksTable = () => {
         Genre: inputGenre.current.value,
         Abstract: inputAbstract.current.value,
       };
-      console.log(updateBook);
       //   let inputFromUser = prompt("Edit Here");
       getData();
-      //   console.log(inputFromUser);
-
       const res = await Axios.patch(
         `http://localhost:2000/book/update/${id}`,
         updateBook
       );
-
       console.log(res);
     } catch (err) {
       console.log(err);
@@ -156,8 +150,6 @@ export const BooksTable = () => {
               })}
             </Table>
           </TableContainer>
-
-          {/* <UpdateComp /> */}
         </Box>
       </Stack>
     </div>

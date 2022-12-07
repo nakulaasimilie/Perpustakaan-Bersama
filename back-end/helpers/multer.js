@@ -14,7 +14,6 @@ const storage = multer.diskStorage({
         "." +
         file.mimetype.split("/")[1]
     );
-    console.log(file);
   },
 });
 

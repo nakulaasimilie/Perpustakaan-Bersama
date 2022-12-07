@@ -68,7 +68,6 @@ module.exports = {
         token,
       });
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -102,7 +101,6 @@ module.exports = {
       const users = await user.findAll({ raw: true });
       return res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -134,7 +132,6 @@ module.exports = {
         data: isAccountExist,
       });
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -183,7 +180,6 @@ module.exports = {
         token,
       });
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
