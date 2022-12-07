@@ -42,6 +42,12 @@ export default function DetailPage() {
     getBook();
   }, []);
 
+  const onAddCart = async (BookId) => {
+    try {
+      const result = await Axios.post();
+    } catch (err) {}
+  };
+
   return (
     <Container maxW={'7xl'}>
       <SimpleGrid
