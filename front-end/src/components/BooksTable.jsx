@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
-import React from "react";
-import Axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { syncData } from "../redux/listSlice";
+import { useEffect, useRef } from 'react';
+import React from 'react';
+import Axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { syncData } from '../redux/listSlice';
 import {
   Image,
   Button,
@@ -31,21 +31,21 @@ import {
   useColorMode,
   useDisclosure,
   Heading,
-} from "@chakra-ui/react";
-import { EditIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { DeleteIcon } from "@chakra-ui/icons";
-import UpdateComp from "./UpdateComp";
+} from '@chakra-ui/react';
+import { EditIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { DeleteIcon } from '@chakra-ui/icons';
+import UpdateComp from './UpdateComp';
 
 export const BooksTable = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.listSlice.value);
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const inputTitle = useRef("");
-  const inputAuthor = useRef("");
-  const inputPublisher = useRef("");
-  const inputGenre = useRef("");
-  const inputAbstract = useRef("");
+  const inputTitle = useRef('');
+  const inputAuthor = useRef('');
+  const inputPublisher = useRef('');
+  const inputGenre = useRef('');
+  const inputAbstract = useRef('');
 
   const getData = async () => {
     try {
@@ -64,7 +64,7 @@ export const BooksTable = () => {
   const onDelete = async (id) => {
     try {
       const res = await Axios.delete(`http://localhost:2000/book/remove/${id}`);
-      console.log(res)
+      console.log(res);
       getData();
     } catch (err) {
       console.log(err);
@@ -94,11 +94,11 @@ export const BooksTable = () => {
 
   return (
     <div>
-      <Stack mt="20px" mb="20px" ml="20px" mr="20px">
-        <Box m="20px">
-          <Heading align="center">Books</Heading>
+      <Stack mt='20px' mb='20px' ml='20px' mr='20px'>
+        <Box m='20px'>
+          <Heading align='center'>Books</Heading>
           <TableContainer>
-            <Table variant="striped" colorScheme="blue">
+            <Table variant='striped' colorScheme='blue'>
               <Thead>
                 <Tr>
                   <Th>Title</Th>
@@ -120,26 +120,24 @@ export const BooksTable = () => {
                       <Td>{item.Publisher}</Td>
                       {/* <Td>{item.Stock}</Td> */}
                       <Td>
-                        <Image w="20px" h="20px" src={item.Images}></Image>
+                        <Image w='20px' h='20px' src={item.Images}></Image>
                       </Td>
                       <Td>
                         <Flex>
                           <Button
-                            colorScheme="teal"
-                            onClick={() => onDelete(item.id)}
-                          >
+                            colorScheme='teal'
+                            onClick={() => onDelete(item.id)}>
                             <DeleteIcon />
                           </Button>
                           <Button
-                            colorScheme="teal"
-                            display="flex"
-                            justifyContent=""
+                            colorScheme='teal'
+                            display='flex'
+                            justifyContent=''
                             // onClick=
                             // {
                             //     () => onUpdate(item.id)
                             // }
-                            href={<UpdateComp />}
-                          >
+                            href={<UpdateComp />}>
                             <EditIcon />
                           </Button>
                         </Flex>

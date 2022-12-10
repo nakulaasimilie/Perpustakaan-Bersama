@@ -1,4 +1,4 @@
-import { EditIcon } from '@chakra-ui/icons';
+import { EditIcon } from "@chakra-ui/icons";
 import {
   Button,
   Flex,
@@ -23,13 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-export default function UpdateComp({ data }) {
-  const { id } = useSelector((state) => state.bookSlice.value);
-  const [image, setImage] = useState("");
-  const [profile, setProfile] = useState("Public");
-  const navigate = useNavigate();
-
-export default function UpdateComp({ data }) {
+export default function UpdateComp({ data }) => {
   console.log(data);
   const inputTitle = useRef("");
   const inputAuthor = useRef("");
@@ -88,69 +82,72 @@ export default function UpdateComp({ data }) {
 
   return (
     <Flex
-      minH={'100vh'}
-      align={'center'}
-      justify={'center'}
-      bg={useColorModeValue('white.50', 'white.800')}>
+      minH={"100vh"}
+      align={"center"}
+      justify={"center"}
+      bg={useColorModeValue("white.50", "white.800")}
+    >
       <Stack
         spacing={4}
-        w={'full'}
-        maxW={'md'}
-        bg={useColorModeValue('white', 'white.700')}
-        rounded={'xl'}
-        boxShadow={'lg'}
+        w={"full"}
+        maxW={"md"}
+        bg={useColorModeValue("white", "white.700")}
+        rounded={"xl"}
+        boxShadow={"lg"}
         p={6}
         my={12}
-        id='#edit'>
+        id="#edit"
+      >
         <Heading
           lineHeight={1.1}
-          fontSize={{ base: '2xl', sm: '3xl' }}
-          textAlign='center'>
+          fontSize={{ base: "2xl", sm: "3xl" }}
+          textAlign="center"
+        >
           Edit Book
         </Heading>
         <Flex id="formEdit">
         <Flex>
-          <FormControl id='title' isRequired>
+          <FormControl id="title" isRequired>
             <FormLabel>Title</FormLabel>
             <Input
-              _placeholder={{ color: 'gray.500' }}
-              type='text'
+              _placeholder={{ color: "gray.500" }}
+              type="text"
               ref={inputTitle}
               defaultValue={data.Title}
             />
           </FormControl>
         </Flex>
-        <FormControl id='author' isRequired>
+        <FormControl id="author" isRequired>
           <FormLabel>Author</FormLabel>
           <Input
-            _placeholder={{ color: 'gray.500' }}
-            type='author'
+            _placeholder={{ color: "gray.500" }}
+            type="author"
             ref={inputAuthor}
             defaultValue={data.Author}
           />
         </FormControl>
-        <FormControl id='publisher' isRequired>
+        <FormControl id="publisher" isRequired>
           <FormLabel>Publisher</FormLabel>
           <Input
-            _placeholder={{ color: 'gray.500' }}
-            type='publisher'
+            _placeholder={{ color: "gray.500" }}
+            type="publisher"
             ref={inputPublisher}
             defaultValue={data.Publisher}
           />
         </FormControl>
-        <FormControl id='genre' isRequired>
+        <FormControl id="genre" isRequired>
           <FormLabel>Genre</FormLabel>
           <Input
-            _placeholder={{ color: 'gray.500' }}
-            type='genre'
+            _placeholder={{ color: "gray.500" }}
+            type="genre"
             ref={inputGenre}
             defaultValue={data.Genre}
           />
         </FormControl>
-        <FormControl id='abstract' isRequired>
+        <FormControl id="abstract" isRequired>
           <FormLabel>Abstract</FormLabel>
           <Textarea
-            _placeholder={{ color: 'gray.500' }}
+            _placeholder={{ color: "gray.500" }}
             ref={inputAbstract}
             defaultValue={data.Abstract}
           />
@@ -187,17 +184,18 @@ export default function UpdateComp({ data }) {
               Cancel
             </Button> */}
           <Button
-            bg={'blue.400'}
-            color={'white'}
-            w='full'
+            bg={"blue.400"}
+            color={"white"}
+            w="full"
             _hover={{
-              bg: 'blue.500',
+              bg: "blue.500",
             }}
-            onClick={() => onUpdate(data.id)}>
+            onClick={() => onUpdate(data.id)}
+          >
             Submit
           </Button>
         </Stack>
       </Stack>
     </Flex>
   );
-}
+          }
