@@ -38,7 +38,7 @@ return (
     <Box>
         {data?.length === 0 ?
             <Box align='center'>
-            <Image src='https://www.kibrispdr.org/data/1779/gif-pendidikan-4.gif' objectFit='contain' w='400px' h='300px' />
+            <Image src='https://media.istockphoto.com/id/1132049279/id/foto/karakter-3d-sedih-dengan-keranjang-belanja-kosong.jpg?s=170667a&w=0&k=20&c=awZX9wHNfETjousFfF8OdjWgNCcJ72a5f28j6HG1oN0=' objectFit='contain' w='400px' h='300px' />
             <Text textAlign='center' fontWeight='bold'>Tidak Ada Transaksi Yang Aktif</Text>
             <Text as={Link} to="/" textAlign='center' fontWeight='bold' color="pink.400" w='150px' _hover={{ cursor: 'pointer', textDecoration: 'underline' }}>
             Pinjam Sekarang

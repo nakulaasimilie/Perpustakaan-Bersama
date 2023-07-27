@@ -29,8 +29,8 @@ export default function UpdateComp({ data }) {
   const [profile, setProfile] = useState("Public");
   const navigate = useNavigate();
 
-export default function UpdateComp({ data }) {
-  console.log(data);
+// export default function UpdateComp({ data }) {
+//   console.log(data);
   const inputTitle = useRef("");
   const inputAuthor = useRef("");
   const inputPublisher = useRef("");
@@ -112,7 +112,7 @@ export default function UpdateComp({ data }) {
           Edit Book
         </Heading>
         <Flex id="formEdit">
-        <Flex>
+        {/* <Flex> */}
           <FormControl id="title" isRequired>
             <FormLabel>Title</FormLabel>
             <Input

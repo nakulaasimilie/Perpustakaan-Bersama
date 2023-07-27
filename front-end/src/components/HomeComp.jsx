@@ -44,9 +44,9 @@ export default function HomeComp() {
 
   // These are the images used in the slide
   const cards = [
-    "https://www.perpusnas.go.id/webforms/images/jdih_.png",
-    "https://www.perpusnas.go.id/webforms/images/rb.png",
-    "https://www.perpusnas.go.id/webforms/images/Diseminasi_ilmu.jpg",
+    "https://www.perpusnas.go.id/_next/image?url=https%3A%2F%2Fbackend.perpusnas.go.id%2Fuploads%2Fbanner%2F1683259548_8c76e0078fd989c94182.jpg&w=1920&q=75",
+    "https://www.perpusnas.go.id/_next/image?url=https%3A%2F%2Fbackend.perpusnas.go.id%2Fuploads%2Fbanner%2F1669137752_36312f0c666c7269bb82.jpg&w=1920&q=75",
+    "https://www.perpusnas.go.id/_next/image?url=https%3A%2F%2Fbackend.perpusnas.go.id%2Fuploads%2Fbanner%2F1683259481_26c46f1bc76af6172e73.png&w=1920&q=75",
   ];
 
   return (

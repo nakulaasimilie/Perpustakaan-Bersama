@@ -3,21 +3,10 @@ import {
   Box,
   Text,
   Button,
-  InputGroup,
-  InputLeftElement,
   Icon,
-  useDisclosure,
-  InputRightElement,
   Input,
   Tooltip,
-  useToast,
   Image,
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
   Divider,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -192,7 +181,7 @@ export default function CartDetail() {
             <>
               <Box align="center">
                 <Image
-                  src="https://www.kibrispdr.org/data/1779/gif-pendidikan-4.gif"
+                  src="https://media.istockphoto.com/id/1132049279/id/foto/karakter-3d-sedih-dengan-keranjang-belanja-kosong.jpg?s=170667a&w=0&k=20&c=awZX9wHNfETjousFfF8OdjWgNCcJ72a5f28j6HG1oN0="
                   objectFit="contain"
                   w="400px"
                   h="300px"

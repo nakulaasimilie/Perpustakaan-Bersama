@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import React from "react";
 import Axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { syncData } from "../redux/listSlice";
+import { syncData } from "../redux/admin/listSlice";
 import {
   Image,
   Button,
