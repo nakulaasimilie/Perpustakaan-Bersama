@@ -2,24 +2,35 @@ const { Op } = require("sequelize");
 const { sequelize } = require("../models");
 const db = require("../models");
 const book = db.Book;
+const cart = db.Cart;
 
 module.exports = {
   create: async (req, res) => {
     try {
-      const { Title, Author, Genre, Publisher, Abstract, Images } = req.body;
+      const { Title, Author, Genre, Publisher, Abstract } = req.body;
+      // let fileUploaded = req.file;
+      // console.log("controller", fileUploaded);
+
       if (!Title && !Author && !Genre && !Publisher && !Abstract && !Images)
         throw "required field";
-      const data = await book.create({
-        Title,
-        Author,
-        Genre,
-        Publisher,
-        Abstract,
-        Images,
+
+      await book.create(
+        {
+          Title,
+          Author,
+          Genre,
+          Publisher,
+          Abstract,
+        }
+        // {
+        //   Images: fileUploaded.filename,
+        // }
+      );
+      res.status(200).send({
+        data,
+        message: "Successfully Added",
       });
-      res.status(200).send("Successfully Added");
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -27,17 +38,18 @@ module.exports = {
     try {
       const users = await book.findAll({
         attributes: [
+          "id",
           "Title",
           "Author",
           "Genre",
           "Publisher",
           "Abstract",
           "Images",
+          // "Stock",
         ],
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -45,14 +57,12 @@ module.exports = {
   getById: async (req, res) => {
     try {
       const users = await book.findOne({
-        // include: book,
         where: {
           id: req.params.id,
         },
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -73,7 +83,6 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -96,7 +105,6 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -108,45 +116,49 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
 
-  delete: async (req, res) => {
+  remove: async (req, res) => {
     try {
       await book.destroy({
         where: {
           id: req.params.id,
         },
       });
+      console.log(req.params.id);
       const users = await book.findAll();
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
 
   update: async (req, res) => {
     try {
+      const { Title, Author, Genre, Publisher, Abstract, Stock } = req.body;
+      let fileUploaded = req.file;
       await book.update(
         {
-          Title: req.body.Title,
-          Author: req.body.Author,
-          Genre: req.body.Genre,
-          Publisher: req.body.Publisher,
-          Abstract: req.body.Abstract,
-          Images: req.body.Images,
+          Title,
+          Author,
+          Genre,
+          Publisher,
+          Abstract,
+
+          Stock,
         },
         {
-          where: { id: req.body.id },
+          Images: fileUploaded.filename,
+        },
+        {
+          where: { id: req.params.id },
         }
       );
-      const users = await book.findAll({ where: { id: req.body.id } });
+      const users = await book.findOne({ where: { id: req.params.id } });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -159,18 +171,124 @@ module.exports = {
       });
       res.status(200).send(users);
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
 
-  uploadFile: async (req, res) => {
+  // uploadFile: async (req, res) => {
+  //   try {
+  //     let fileUploaded = req.file;
+  //     console.log("controller", fileUploaded);
+  //     await book.update(
+  //       {
+  //         Images: fileUploaded.filename,
+  //       },
+  //       {
+  //         where: {
+  //           id: req.params.id,
+  //         },
+  //       }
+  //     );
+  //     const getBook = await book.findOne({
+  //       where: {
+  //         id: req.params.id,
+  //       },
+  //       raw: true,
+  //     });
+  //     res.status(200).send({
+  //       id: getBook.id,
+  //       Title: getBook.Title,
+  //       Images: getBook.Images,
+  //     });
+  //   } catch (err) {
+  //     res.status(400).send(err);
+  //   }
+  // },
+
+  view2: async (req, res) => {
     try {
-      
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+      const { page, limit, search_query, order, order_direction } = req.query;
+      const booklist_page = parseInt(page) || 0;
+      const list_limit = parseInt(limit) || 5;
+      const search = search_query || "";
+      const offset = list_limit * booklist_page;
+      const orderby = order || "Title";
+      const direction = order_direction || "ASC";
+      const totalRows = await book.count({
+        where: {
+          [Op.or]: [
+            {
+              Title: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              Author: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              Publisher: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / limit);
+      const result = await book.findAll({
+        include: [
+          {
+            model: cart,
+            attributes: ["id", "UserNIM"],
+          },
+        ],
+        where: {
+          [Op.or]: [
+            {
+              Title: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              Author: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              Publisher: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+          ],
+        },
+        offset: offset,
+        limit: list_limit,
+        order: [[orderby, direction]],
+        include: [
+          {
+            model: cart,
+            attributes: ["id", "UserNIM"],
+          },
+        ],
+      });
+
+      res.status(200).send({
+        result: result,
+        page: booklist_page,
+        limit: list_limit,
+        totalRows: totalRows,
+        totalPage: totalPage,
+      });
+    } catch (error) {
+      res.status(400).send(error);
     }
   },
 
+  stock: async (req, res) => {
+    try {
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
 };
